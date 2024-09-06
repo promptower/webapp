@@ -62,8 +62,8 @@ const navigateTo = (path) => {
   left: 50%;
   transform: translate(-50%, 0%);
 
-  width: 512px;
-  height: 330px;
+  width: 410px;
+  height: 272px;
   padding: 30px 46px;
   flex-direction: column;
   justify-content: space-between;
@@ -120,8 +120,8 @@ const navigateTo = (path) => {
 
 .join-app-btn {
   display: flex;
-  width: 150px;
-  height: 40px;
+  width: 100px;
+  height: 20px;
   padding: 10px 20px;
   align-items: flex-start;
   gap: 12px;
