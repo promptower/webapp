@@ -1,85 +1,168 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <div class="notebook">
+    <img
+      class="fixed-notebook"
+      src="@/assets/landing/notebook.svg"
+      alt="Notebook"
+    />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+    <div class="notebook-screen">
+      <div class="notebook-screen-wrapper">
+        <img class="fixed-logo" src="@/assets/landing/logo.svg" alt="Logo" />
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+        <div class="notebook-screen-title-wrapper">
+          <div class="notebook-screen-title-text">Capture the Prompt</div>
+          <div class="notebook-screen-content-text">
+            Blockchain-Based AI Prompt Market via  Capture-the-Flag
+          </div>
+
+          <div class="join-app-btn">
+            <div class="join-app-text">Let’s Play</div>
+            <img src="@/assets/landing/join-arrow.svg" alt="Join-Arrow" />
+          </div>
+        </div>
+      </div>
     </div>
-  </header>
+  </div>
 
-  <RouterView />
+  <img class="fixed-flower" src="@/assets/landing/flower.svg" alt="Flower" />
+  <img class="fixed-pencil" src="@/assets/landing/pencil.svg" alt="Pencil" />
+
+  <div class="background-fixed"></div>
 </template>
 
+<script setup></script>
+
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+.notebook {
+  position: fixed;
+  top: 57%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
+.fixed-notebook {
   width: 100%;
-  font-size: 12px;
+  width: 640px;
+}
+
+.notebook-screen {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translate(-50%, 0%);
+
+  width: 512px;
+  height: 330px;
+  padding: 30px 46px;
+  flex-direction: column;
+  justify-content: space-between;
   text-align: center;
-  margin-top: 2rem;
+  align-items: center;
+  flex-shrink: 0;
+
+  border-radius: 10px;
+  border: 2px solid #000;
+  background: #fff;
+
+  z-index: 11;
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
+.notebook-screen-wrapper {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+.notebook-screen img {
+  margin-bottom: 20px;
 }
 
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+.notebook-screen-title-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
 }
 
-nav a:first-of-type {
-  border: 0;
+.notebook-screen-title-text {
+  color: #000;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: Archivo;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: normal;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.notebook-screen-content-text {
+  color: #000;
+  text-align: center;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: Archivo;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+.join-app-btn {
+  display: flex;
+  width: 150px;
+  height: 40px;
+  padding: 10px 20px;
+  align-items: flex-start;
+  gap: 12px;
+  flex-shrink: 0;
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+  border-radius: 20px;
+  border: 2px solid #000;
+  background: #4dc4cf;
 
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
+  cursor: pointer;
+}
 
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+.join-app-text {
+  color: #000;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: Archivo;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.fixed-flower {
+  position: fixed;
+  bottom: 20%;
+  right: 0;
+  width: 360px;
+  height: auto;
+  z-index: 10;
+}
+
+.fixed-pencil {
+  position: fixed;
+  bottom: 20%;
+  left: 0;
+  width: 280px;
+  height: auto;
+  z-index: 10;
+}
+
+.background-fixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30vh;
+  background-color: #53926d;
+  z-index: 0;
+  pointer-events: none;
+
+  border: 2px solid #000;
 }
 </style>
