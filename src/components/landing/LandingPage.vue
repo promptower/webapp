@@ -16,7 +16,7 @@
             Blockchain-Based AI Prompt Market via Capture-the-Flag
           </div>
 
-          <div class="join-app-btn" @click="clickBtn">
+          <div class="join-app-btn" @click="navigateTo('/challenge')">
             <div class="join-app-text">Let’s Play</div>
             <img src="@/assets/landing/join-arrow.svg" alt="Join-Arrow" />
           </div>
@@ -32,12 +32,13 @@
 </template>
 
 <script setup>
-// Define emits
-const emit = defineEmits(["clickBtn"]);
+import { useRouter } from "vue-router";
 
 // Methods
-const clickBtn = async () => {
-  emit("clickBtn");
+const router = useRouter();
+const navigateTo = (path) => {
+  router.push(path);
+  window.scrollTo(0, 0);
 };
 </script>
 
