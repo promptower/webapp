@@ -1,16 +1,9 @@
 <template>
-  <div>1212</div>
-  <div>1212</div>
-  <div>1212</div>
-  <div>1212</div>
-  <div>1212</div>
-  <div>1212</div>
-  <div>1212</div>
-  <div>1212</div>
-  <div>1212</div>
+  <ChallengePage />
 </template>
 
 <script setup>
+import ChallengePage from "../components/challenge/ChallengePage.vue";
 </script>
 
 <style></style>
