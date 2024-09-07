@@ -266,6 +266,8 @@ const closeModal = () => {
   font-style: normal;
   font-weight: 800;
   line-height: normal;
+
+  cursor: pointer;
 }
 
 .nfts {
