@@ -179,7 +179,7 @@
 
 .table-title-wrapper {
   display: flex;
-  padding: 20px 62px 10px 62px;
+  padding: 20px 62px;
   justify-content: center;
   align-items: center;
   align-self: stretch;
@@ -225,7 +225,7 @@
 
 .table-content-wrapper {
   display: flex;
-  padding: 10px 62px;
+  padding: 16px 62px;
   justify-content: center;
   align-items: center;
   align-self: stretch;
@@ -237,12 +237,6 @@
 }
 
 .table-content-wrapper:last-child {
-  display: flex;
-  padding: 10px 62px 10px 62px;
-  justify-content: center;
-  align-items: center;
-  align-self: stretch;
-
   border-radius: 0px 0px 20px 20px;
   border: 2px solid #000;
   background: #f5f3f3;
