@@ -12,6 +12,16 @@ const routes = [
     name: 'Challenge',
     component: () => import('../views/ChallengeView.vue')
   },
+  {
+    path: '/leaderboard',
+    name: 'Leaderboard',
+    component: () => import('../views/LeaderboardView.vue')
+  },
+  {
+    path: '/portfolio',
+    name: 'Portfolio',
+    component: () => import('../views/PortfolioView.vue')
+  },
 ]
 
 const router = createRouter({

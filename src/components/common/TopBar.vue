@@ -9,18 +9,21 @@
         <div
           class="menu-text"
           :class="{ 'menu-text-active': isActiveRoute(['/challenge']) }"
+          @click="navigateTo('/challenge')"
         >
           Challenge
         </div>
         <div
           class="menu-text"
           :class="{ 'menu-text-active': isActiveRoute(['/leaderboard']) }"
+          @click="navigateTo('/leaderboard')"
         >
           Leaderboard
         </div>
         <div
           class="menu-text"
           :class="{ 'menu-text-active': isActiveRoute(['/portfolio']) }"
+          @click="navigateTo('/portfolio')"
         >
           Portfolio
         </div>
