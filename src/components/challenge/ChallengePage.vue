@@ -1,5 +1,5 @@
 <template>
-  <div class="challenge">
+  <div v-if="!showModal" class="challenge">
     <div class="challenge-wrapper">
       <div class="challenge-title-text">Challenge</div>
       <div class="challenge-live-filter">
@@ -118,16 +118,34 @@
               <div class="nft-award-content-text">6,000 USDC</div>
             </div>
           </div>
-          <div class="nft-btn">
+          <div class="nft-btn" @click="openModal">
             <div class="nft-btn-text">Challenge</div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <ChallengeModal v-if="showModal" @closeModal="closeModal" />
 </template>
 
-<script setup></script>
+<script setup>
+import ChallengeModal from "./ChallengeModal.vue";
+
+import { ref, onMounted, onBeforeUnmount } from "vue";
+
+// Reactive state
+const showModal = ref(false);
+
+// Methods
+const openModal = () => {
+  showModal.value = true;
+};
+
+const closeModal = () => {
+  showModal.value = false;
+};
+</script>
 
 <style scoped>
 .challenge {
@@ -450,7 +468,7 @@
 }
 
 .nft-award-text {
-  color: #3700ff;
+  color: #4dc4cf;
   font-feature-settings: "liga" off, "clig" off;
   font-family: Archivo;
   font-size: 14px;
@@ -460,7 +478,7 @@
 }
 
 .nft-award-content-text {
-  color: #3700ff;
+  color: #4dc4cf;
   text-align: right;
   font-feature-settings: "liga" off, "clig" off;
   font-family: Archivo;
