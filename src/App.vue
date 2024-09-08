@@ -1,6 +1,6 @@
 <template>
   <TopBar v-if="route.path != '/'" />
-  <router-view />
+  <router-view class="router" />
   <Footer v-if="route.path != '/'" />
 </template>
 
@@ -14,4 +14,15 @@ import { useRoute, useRouter } from "vue-router";
 const route = useRoute();
 </script>
 
-<style scoped></style>
+<style>
+body {
+  background: url("@/assets/background.png");
+  background-size: cover;
+  margin: 0px;
+}
+
+.router {
+  margin-top: 30px;
+  min-height: calc(100vh - 351px);
+}
+</style>
