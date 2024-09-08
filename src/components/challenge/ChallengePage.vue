@@ -75,10 +75,17 @@
       </div>
       <div class="nfts">
         <!-- repeat -->
-        <div v-for="(item, index) in 6" class="nft-wrapper">
+        <div
+          v-for="(item, index) in nftData"
+          :key="item.id"
+          class="nft-wrapper"
+        >
           <div class="nft-content-wrapper">
             <div class="nft-content-top-wrapper">
-              <img src="@/assets/nft/nft0.png" alt="nft" />
+              <img
+                :src="item.imageUri ? item.imageUri : '@/assets/nft/0.png'"
+                alt="nft"
+              />
               <div class="nft-content-top-title-wrapper">
                 <div class="live-wrapper">
                   <svg
@@ -93,34 +100,39 @@
                   <div class="live-text">Live</div>
                 </div>
                 <div class="live-title-wrapper">
-                  <div class="live-title-text">MG12 Prompt</div>
+                  <div class="live-title-text">{{ item.name }}</div>
                   <div class="type-wrapper">
-                    <div class="type-text">Secret</div>
+                    <div class="type-text">{{ item.gameType }}</div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="nft-description">
-              The first modular settlement layer designed to unlock Bitcoin's
-              liquidity across diverse blockchain ecosystems.
-            </div>
+            <div class="nft-description">{{ item.description }}</div>
             <div class="nft-date-wrapper">
               <div class="nft-date-text">Date</div>
               <div class="nft-date-content-wrapper">
-                <div class="nft-date-content-text">08.30 5:00 AM(UST)</div>
-                <div class="nft-date-content-text">~ 09.13 5:00 AM(UST)</div>
+                <div class="nft-date-content-text">
+                  {{ formatDate(item.startDate) }}
+                </div>
+                <div class="nft-date-content-text">
+                  ~ {{ formatDate(item.endDate) }}
+                </div>
               </div>
             </div>
             <div class="nft-duration-wrapper">
               <div class="nft-duration-text">Duration</div>
-              <div class="nft-duration-content-text">14 days</div>
+              <div class="nft-duration-content-text">
+                {{ calculateDuration(item.startDate, item.endDate) }} days
+              </div>
             </div>
             <div class="nft-award-wrapper">
               <div class="nft-award-text">Award</div>
-              <div class="nft-award-content-text">6,000 USDC</div>
+              <div class="nft-award-content-text">
+                {{ formatAward(item.awards) }} USDC
+              </div>
             </div>
           </div>
-          <div class="nft-btn" @click="openModal">
+          <div class="nft-btn" @click="openModal(item)">
             <div class="nft-btn-text">Challenge</div>
           </div>
         </div>
@@ -143,7 +155,7 @@
     </div>
   </div>
 
-  <ChallengeModal v-if="showModal" @closeModal="closeModal" />
+  <ChallengeModal v-if="showModal" :nft="selectedNft" @closeModal="closeModal" />
   <CreateModal v-if="showCreateModal" @closeCreateModal="closeCreateModal" />
 </template>
 
@@ -151,14 +163,24 @@
 import ChallengeModal from "./ChallengeModal.vue";
 import CreateModal from "./CreateModal.vue";
 
+import { getGames } from "@/utils/gameView";
+
 import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ethers } from "ethers";
 
 // Reactive state
 const showModal = ref(false);
 const showCreateModal = ref(false);
 
-// Methods
-const openModal = () => {
+// State for selected NFT
+const selectedNft = ref(null);
+
+// State for NFT data
+const nftData = ref([]);
+
+// Methods for modals
+const openModal = (item) => {
+  selectedNft.value = item;
   showModal.value = true;
 };
 
@@ -173,6 +195,52 @@ const openCreateModal = () => {
 const closeCreateModal = () => {
   showCreateModal.value = false;
 };
+
+// TODO
+// Mock method to fetch data from the contract
+const fetchNftData = async () => {
+  const result = await getGames(0, 6); // TODO
+
+  nftData.value = result.map((nft) => ({
+    id: nft[0],
+    name: nft[1],
+    description: nft[2],
+    gameType: nft[3],
+    imageUri: nft[4],
+    startDate: Number(nft[5]),
+    endDate: Number(nft[6]),
+    awards: Number(nft[7]),
+  }));
+
+  console.log(nftData.value);
+};
+
+// Utility methods
+const formatDate = (timestamp) => {
+  const date = new Date(timestamp * 1000);
+  return date.toLocaleString("en-US", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const calculateDuration = (startDate, endDate) => {
+  const diffInSeconds = endDate - startDate;
+  const days = diffInSeconds / (60 * 60 * 24);
+  return Math.round(days);
+};
+
+const formatAward = (award) => {
+  // return award;
+  return ethers.formatUnits(award.toString(), 18);
+};
+
+// Fetch data when component is mounted
+onMounted(() => {
+  fetchNftData();
+});
 </script>
 
 <style scoped>
