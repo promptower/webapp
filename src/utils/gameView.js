@@ -66,6 +66,45 @@ async function getGames(
     return response;
 }
 
+async function getStatus(
+) {
+    await attach();
+
+    let response = await contracts.Game.gameStatus();
+    return response;
+}
+
+async function getTopSolvers(
+    topk
+) {
+    await attach();
+
+    let response = await contracts.Game.getTopSolvers(topk);
+    return response;
+}
+
+async function getPortfolioMaker(
+    user
+) {
+    await attach();
+
+    let response = await contracts.Game.getPortfolioMaker(user);
+    return response;
+}
+
+async function getPortfolioSolver(
+    user
+) {
+    await attach();
+
+    let response = await contracts.Game.getPortfolioSolver(user);
+    return response;
+}
+
 export {
     getGames,
+    getStatus,
+    getTopSolvers,
+    getPortfolioMaker,
+    getPortfolioSolver,
 }

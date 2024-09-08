@@ -7,19 +7,21 @@
           <div class="data-wrapper">
             <div class="title-wrapper">
               <div class="title-text">Total Challenges</div>
-              <div class="content-text">100</div>
+              <div class="content-text">{{ overview.totalChallenges }}</div>
             </div>
             <div class="title-wrapper">
               <div class="title-text">Ongoing Challenges</div>
-              <div class="content-text">10</div>
+              <div class="content-text">{{ overview.ongoingChallenges }}</div>
             </div>
             <div class="title-wrapper">
               <div class="title-text">Solved Challenges</div>
-              <div class="content-text">30</div>
+              <div class="content-text">{{ overview.solvedChallenges }}</div>
             </div>
             <div class="title-wrapper">
               <div class="title-verified-text">Verified Challenges</div>
-              <div class="content-verified-text">60</div>
+              <div class="content-verified-text">
+                {{ overview.verifiedChallenges }}
+              </div>
             </div>
           </div>
         </div>
@@ -33,12 +35,20 @@
             <div class="award-text">Total Award</div>
             <div class="solved-text">Solved</div>
           </div>
-          <!-- repeat -->
-          <div v-for="(item, index) in 6" class="table-content-wrapper">
-            <div class="rank-content-text">1</div>
-            <div class="challenger-content-text">0x1234...1234</div>
-            <div class="award-content-text">$5,000</div>
-            <div class="solved-content-text">7</div>
+          <!-- Leaderboard items -->
+          <div
+            v-for="(solver, index) in leaderboard"
+            :key="index"
+            class="table-content-wrapper"
+          >
+            <div class="rank-content-text">{{ index + 1 }}</div>
+            <div class="challenger-content-text">
+              {{ formatAddress(solver.address) }}
+            </div>
+            <div class="award-content-text">
+              {{ formatAward(solver.award) }}
+            </div>
+            <div class="solved-content-text">{{ solver.solved }}</div>
           </div>
         </div>
       </div>
@@ -46,7 +56,66 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { getStatus, getTopSolvers } from "@/utils/gameView";
+
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ethers } from "ethers";
+
+const overview = ref({
+  totalChallenges: 0,
+  ongoingChallenges: 0,
+  solvedChallenges: 0,
+  verifiedChallenges: 0,
+});
+
+const leaderboard = ref([]);
+
+const fetchOverview = async () => {
+  try {
+    const status = await getStatus();
+    overview.value.totalChallenges = status[0];
+    overview.value.ongoingChallenges = status[1];
+    overview.value.solvedChallenges = status[2];
+    overview.value.verifiedChallenges = status[3];
+  } catch (error) {
+    console.error("Error fetching overview data:", error);
+  }
+};
+
+const fetchLeaderboard = async () => {
+  try {
+    const result = await getTopSolvers(10);
+    leaderboard.value = result[0]
+      .map((address, index) => ({
+        address,
+        solved: result[1][index],
+        award: result[2][index].toString(),
+      }))
+      .sort((a, b) => b.award - a.award); // Sort by award in descending order
+  } catch (error) {
+    console.error("Error fetching leaderboard data:", error);
+  }
+};
+
+const formatAward = (award) => {
+  // return award;
+  return ethers.formatUnits(award.toString(), 18);
+};
+
+const formatAddress = (address) => {
+  if (address) {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  }
+  return address;
+};
+
+// Fetch data when the component is mounted
+onMounted(() => {
+  fetchOverview();
+  fetchLeaderboard();
+});
+</script>
 
 <style scoped>
 .leaderboard {

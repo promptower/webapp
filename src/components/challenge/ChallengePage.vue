@@ -220,38 +220,40 @@ const closeCreateModal = () => {
 };
 
 const fetchNftData = async () => {
-  const result = await getGames(0, 6); // TODO
+  const result = await getGames(0, 12); // TODO
 
-  nftData.value = result.map((nft) => {
-    const winnerAddress = nft[8];
-    const currentTime = Math.floor(Date.now() / 1000);
+  nftData.value = result
+    .map((nft) => {
+      const winnerAddress = nft[8];
+      const currentTime = Math.floor(Date.now() / 1000);
 
-    console.log(winnerAddress);
-    let status = "Live";
-    if (
-      winnerAddress.toLowerCase() ===
-      "0xffffffffffffffffffffffffffffffffffffffff"
-    ) {
-      status = "Verified";
-    } else if (winnerAddress !== ethers.ZeroAddress) {
-      status = "Solved";
-    } else if (currentTime > Number(nft[6])) {
-      status = "End";
-    }
+      console.log(winnerAddress);
+      let status = "Live";
+      if (
+        winnerAddress.toLowerCase() ===
+        "0xffffffffffffffffffffffffffffffffffffffff"
+      ) {
+        status = "Verified";
+      } else if (winnerAddress !== ethers.ZeroAddress) {
+        status = "Solved";
+      } else if (currentTime > Number(nft[6])) {
+        status = "End";
+      }
 
-    return {
-      status,
-      winnerAddress,
-      id: nft[0],
-      name: nft[1],
-      description: nft[2],
-      gameType: nft[3],
-      imageUri: nft[4],
-      startDate: Number(nft[5]),
-      endDate: Number(nft[6]),
-      awards: Number(nft[7]),
-    };
-  });
+      return {
+        status,
+        winnerAddress,
+        id: nft[0],
+        name: nft[1],
+        description: nft[2],
+        gameType: nft[3],
+        imageUri: nft[4],
+        startDate: Number(nft[5]),
+        endDate: Number(nft[6]),
+        awards: Number(nft[7]),
+      };
+    })
+    .reverse(); // Reverse the array here
 
   console.log(nftData.value);
 };
