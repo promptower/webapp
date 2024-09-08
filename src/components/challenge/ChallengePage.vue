@@ -125,6 +125,21 @@
           </div>
         </div>
       </div>
+      <div class="pagination">
+        <div class="pagination-wrapper">
+          <img src="@/assets/pagination/left.svg" alt="left" />
+          <div class="number-wrapper">
+            <div class="number-text" :class="{ 'is-pagination-active': true }">
+              1
+            </div>
+            <div class="number-text">2</div>
+            <div class="number-text">3</div>
+            <div class="number-text">4</div>
+            <div class="number-text">5</div>
+          </div>
+          <img src="@/assets/pagination/right.svg" alt="right" />
+        </div>
+      </div>
     </div>
   </div>
 
@@ -526,5 +541,51 @@ const closeCreateModal = () => {
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+}
+
+.pagination-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.pagination-wrapper img {
+  cursor: pointer;
+}
+
+.number-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.number-text {
+  color: #000;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: Archivo;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+  cursor: pointer;
+}
+
+.is-pagination-active {
+  color: #000;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: Archivo;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-decoration-line: underline;
 }
 </style>
