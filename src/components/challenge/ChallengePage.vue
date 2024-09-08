@@ -95,9 +95,16 @@
                     viewBox="0 0 12 12"
                     fill="none"
                   >
-                    <circle cx="6" cy="6.02026" r="5.5" fill="#53926D" />
+                    <circle
+                      cx="6"
+                      cy="6.02026"
+                      r="5.5"
+                      :fill="item.status === 'Live' ? '#53926D' : '#CC0000'"
+                    />
                   </svg>
-                  <div class="live-text">Live</div>
+                  <div class="live-text">
+                    {{ item.status === "Live" ? "Live" : "End" }}
+                  </div>
                 </div>
                 <div class="live-title-wrapper">
                   <div class="live-title-text">{{ item.name }}</div>
@@ -132,8 +139,20 @@
               </div>
             </div>
           </div>
-          <div class="nft-btn" @click="openModal(item)">
-            <div class="nft-btn-text">Challenge</div>
+          <div
+            class="nft-btn"
+            :class="{ disabled: item.status === 'Solved' }"
+            @click="item.status !== 'Solved' && openModal(item)"
+          >
+            <div class="nft-btn-text">
+              {{
+                item.status === "Solved"
+                  ? formatAddress(item.winnerAddress)
+                  : item.status === "Verified"
+                  ? "Verified"
+                  : "Challenge"
+              }}
+            </div>
           </div>
         </div>
       </div>
@@ -155,7 +174,11 @@
     </div>
   </div>
 
-  <ChallengeModal v-if="showModal" :nft="selectedNft" @closeModal="closeModal" />
+  <ChallengeModal
+    v-if="showModal"
+    :nft="selectedNft"
+    @closeModal="closeModal"
+  />
   <CreateModal v-if="showCreateModal" @closeCreateModal="closeCreateModal" />
 </template>
 
@@ -196,21 +219,39 @@ const closeCreateModal = () => {
   showCreateModal.value = false;
 };
 
-// TODO
-// Mock method to fetch data from the contract
 const fetchNftData = async () => {
   const result = await getGames(0, 6); // TODO
 
-  nftData.value = result.map((nft) => ({
-    id: nft[0],
-    name: nft[1],
-    description: nft[2],
-    gameType: nft[3],
-    imageUri: nft[4],
-    startDate: Number(nft[5]),
-    endDate: Number(nft[6]),
-    awards: Number(nft[7]),
-  }));
+  nftData.value = result.map((nft) => {
+    const winnerAddress = nft[8];
+    const currentTime = Math.floor(Date.now() / 1000);
+
+    console.log(winnerAddress);
+    let status = "Live";
+    if (
+      winnerAddress.toLowerCase() ===
+      "0xffffffffffffffffffffffffffffffffffffffff"
+    ) {
+      status = "Verified";
+    } else if (winnerAddress !== ethers.ZeroAddress) {
+      status = "Solved";
+    } else if (currentTime > Number(nft[6])) {
+      status = "End";
+    }
+
+    return {
+      status,
+      winnerAddress,
+      id: nft[0],
+      name: nft[1],
+      description: nft[2],
+      gameType: nft[3],
+      imageUri: nft[4],
+      startDate: Number(nft[5]),
+      endDate: Number(nft[6]),
+      awards: Number(nft[7]),
+    };
+  });
 
   console.log(nftData.value);
 };
@@ -235,6 +276,13 @@ const calculateDuration = (startDate, endDate) => {
 const formatAward = (award) => {
   // return award;
   return ethers.formatUnits(award.toString(), 18);
+};
+
+const formatAddress = (address) => {
+  if (address) {
+    return `Winner: ${address.slice(0, 6)}...${address.slice(-4)}`;
+  }
+  return address;
 };
 
 // Fetch data when component is mounted
