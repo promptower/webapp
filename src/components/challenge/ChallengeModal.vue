@@ -12,7 +12,8 @@
         </div>
         <div class="modal-info">
           <div class="modal-info-top">
-            <img src="@/assets/nft/0.png" alt="nft" />
+            <!-- Bind dynamic NFT image -->
+            <img :src="nft.imageUri || '@/assets/nft/0.png'" alt="nft" />
             <div class="modal-info-title-wrapper">
               <div class="live-wrapper">
                 <svg
@@ -27,57 +28,75 @@
                 <div class="live-text">Live</div>
               </div>
               <div class="title-wrapper">
-                <div class="title-text">MG12 Prompt</div>
+                <!-- Bind dynamic NFT title and game type -->
+                <div class="title-text">{{ nft.name }}</div>
                 <div class="type-wrapper">
-                  <div class="type-text">Secret</div>
+                  <div class="type-text">{{ nft.gameType }}</div>
                 </div>
-                <div class="title-description">
-                  The first modular settlement layer designed to unlock
-                  Bitcoin's liquidity across diverse blockchain ecosystems.
-                </div>
+                <!-- Bind dynamic NFT description -->
+                <div class="title-description">{{ nft.description }}</div>
               </div>
             </div>
           </div>
           <div class="modal-info-bottom">
+            <!-- Bind dynamic start date -->
             <div class="details-title-wrapper">
               <div class="details-title-text">Start Date</div>
-              <div class="details-content-text">08.30 5:00 AM(UST)</div>
+              <div class="details-content-text">
+                {{ formatDate(nft.startDate) }}
+              </div>
             </div>
+            <!-- Bind dynamic end date -->
             <div class="details-title-wrapper">
               <div class="details-title-text">End Date</div>
-              <div class="details-content-text">08.30 5:00 AM(UST)</div>
+              <div class="details-content-text">
+                {{ formatDate(nft.endDate) }}
+              </div>
             </div>
+            <!-- Bind dynamic duration -->
             <div class="details-title-wrapper">
               <div class="details-title-text">Duration</div>
-              <div class="details-content-text">14 days</div>
+              <div class="details-content-text">
+                {{ calculateDuration(nft.startDate, nft.endDate) }} days
+              </div>
             </div>
+            <!-- Bind dynamic awards -->
             <div class="details-title-wrapper">
               <div class="details-award-text">Awards</div>
-              <div class="details-award-text">$6,000 in USDC</div>
+              <div class="details-award-text">
+                {{ formatAward(nft.awards) }} in USDC
+              </div>
             </div>
           </div>
         </div>
         <div class="bottom-wrapper">
+          <!-- Existing bottom section remains the same -->
           <div class="question-wrapper">
             <div class="question-title-text">Question</div>
             <div class="question-content-wrapper">
-              <div class="question-content-input"></div>
+              <input
+                class="question-content-input"
+                type="text"
+                v-model="question"
+              />
               <div class="submit-btn">
-                <div class="submit-text">Submit</div>
+                <div class="submit-text" @click="callGPT()">Submit</div>
               </div>
             </div>
           </div>
           <div class="answer-wrapper">
             <div class="answer-title-text">Answer</div>
             <div class="answer-content-wrapper">
-              <div class="answer-content-input"></div>
+              <div class="answer-content-input">
+                {{ answer }}
+              </div>
               <div class="empty-box"></div>
             </div>
           </div>
           <div class="pk-wrapper">
-            <div class="pk-title-text">PK</div>
+            <div class="pk-title-text">Secret</div>
             <div class="pk-content-wrapper">
-              <div class="pk-content-input"></div>
+              <input class="pk-content-input" />
               <div class="submit-btn">
                 <div class="submit-text">Submit</div>
               </div>
@@ -90,12 +109,79 @@
 </template>
 
 <script setup>
-// Define emits
-const emit = defineEmits(["closeModal"]);
+import { ref } from "vue";
 
-// Methods
+import { useWeb3Modal, useWalletInfo, useWeb3ModalAccount } from "@/utils";
+import config from "@/config";
+
+// Reactive state
+const modal = useWeb3Modal();
+const { walletInfo } = useWalletInfo();
+const { address, chainId, isConnected } = useWeb3ModalAccount();
+
+// Props
+const props = defineProps({
+  nft: {
+    type: Object,
+    required: true,
+  },
+});
+
+// Emit event to close the modal
+const emit = defineEmits(["closeModal"]);
+const question = ref("");
+const answer = ref("");
+
+const callGPT = async () => {
+  const url =
+    "https://ib9fm6yjjg.execute-api.ap-northeast-2.amazonaws.com/ctp/gpt";
+  const data = {
+    user: address.value,
+    nft: config.contracts.Badge,
+    prompt: question.value,
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+    console.log(result.message);
+
+    answer.value = result.message;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
 const closeModal = () => {
   emit("closeModal");
+};
+
+// Utility methods to format date and award
+const formatDate = (timestamp) => {
+  const date = new Date(timestamp * 1000); // Convert from seconds to milliseconds
+  return date.toLocaleString("en-US", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const calculateDuration = (startDate, endDate) => {
+  const diffInSeconds = endDate - startDate;
+  const days = diffInSeconds / (60 * 60 * 24); // Convert from seconds to days
+  return Math.round(days);
+};
+
+const formatAward = (award) => {
+  return (award / 1e18).toFixed(2); // Assuming award is in Wei, convert to Ether/USDC
 };
 </script>
 
