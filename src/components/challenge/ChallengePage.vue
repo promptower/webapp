@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!showModal" class="challenge">
+  <div v-if="!showModal && !showCreateModal" class="challenge">
     <div class="challenge-wrapper">
       <div class="challenge-title-text">Challenge</div>
       <div class="challenge-live-filter">
@@ -69,7 +69,9 @@
             </div>
           </div>
         </div>
-        <div class="challenge-create-new-btn">+Create New Challange</div>
+        <div class="challenge-create-new-btn" @click="openCreateModal">
+          +Create New Challange
+        </div>
       </div>
       <div class="nfts">
         <!-- repeat -->
@@ -127,15 +129,18 @@
   </div>
 
   <ChallengeModal v-if="showModal" @closeModal="closeModal" />
+  <CreateModal v-if="showCreateModal" @closeCreateModal="closeCreateModal" />
 </template>
 
 <script setup>
 import ChallengeModal from "./ChallengeModal.vue";
+import CreateModal from "./CreateModal.vue";
 
 import { ref, onMounted, onBeforeUnmount } from "vue";
 
 // Reactive state
 const showModal = ref(false);
+const showCreateModal = ref(false);
 
 // Methods
 const openModal = () => {
@@ -144,6 +149,14 @@ const openModal = () => {
 
 const closeModal = () => {
   showModal.value = false;
+};
+
+const openCreateModal = () => {
+  showCreateModal.value = true;
+};
+
+const closeCreateModal = () => {
+  showCreateModal.value = false;
 };
 </script>
 
