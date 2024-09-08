@@ -11,18 +11,24 @@
           />
         </div>
         <div class="about-wrapper">
-          <div class="about-text">Create A New Challange</div>
+          <div class="about-text">Create A New Challenge</div>
         </div>
         <div class="content-wrapper">
           <div class="content-left-wrapper">
             <div class="name-wrapper">
               <div class="name-text">Name</div>
-              <input class="name-input" placeholder="Name" type="text" />
+              <input
+                class="name-input"
+                v-model="metadata.name"
+                placeholder="Name"
+                type="text"
+              />
             </div>
             <div class="description-wrapper">
               <div class="description-text">Description</div>
               <input
                 class="description-input"
+                v-model="metadata.description"
                 placeholder="Description"
                 type="text"
               />
@@ -30,14 +36,14 @@
             <div class="date-wrapper">
               <div class="date-text">Date</div>
               <div class="date-input-wrapper">
-                <input class="date-input" type="date" />
-                <input class="date-input" type="date" />
+                <input class="date-input" v-model="startDate" type="date" />
+                <input class="date-input" v-model="endDate" type="date" />
               </div>
             </div>
             <div class="award-wrapper">
               <div class="award-text">Award</div>
               <div class="award-input-wrapper">
-                <input class="award-input" type="text" />
+                <input class="award-input" v-model="award" type="text" />
                 <div class="usdc-wrapper">
                   <div class="usdc-text">USDC</div>
                 </div>
@@ -46,31 +52,34 @@
           </div>
           <div class="content-right-wrapper">
             <div class="type-wrapper">
-              <div class="type-text">type</div>
+              <div class="type-text">Type</div>
               <div class="type-content-secret-wrapper">
                 <div class="type-content-wrapper">
                   <div class="type-content-text">Secret</div>
                 </div>
-                <!-- <div class="type-content-wrapper">
-                  <div class="type-content-text">Slang</div>
-                </div> -->
               </div>
             </div>
             <div class="description-wrapper">
               <div class="description-text">Prompt</div>
               <input
                 class="description-input"
+                v-model="prompt"
                 placeholder="Prompt"
                 type="text"
               />
             </div>
             <div class="name-wrapper">
               <div class="name-text">Secret</div>
-              <input class="name-input" placeholder="Secret" type="text" />
+              <input
+                class="name-input"
+                v-model="secret"
+                placeholder="Secret"
+                type="text"
+              />
             </div>
             <div class="submit-wrapper">
               <div class="empty-text"></div>
-              <div class="submit-btn-wrapper">
+              <div class="submit-btn-wrapper" @click="submitMetadata">
                 <div class="submit-btn-text">Submit</div>
               </div>
             </div>
@@ -82,12 +91,72 @@
 </template>
 
 <script setup>
+import { ethers } from "ethers";
+import { ref } from "vue";
+
+import { useWeb3ModalAccount, useWeb3ModalProvider } from "@/utils";
+import { approve, mint } from "@/utils/game";
+
 // Define emits
 const emit = defineEmits(["closeCreateModal"]);
+
+// State for inputs
+const metadata = ref({
+  name: "",
+  description: "",
+  award: "",
+  gameType: "secret",
+  prompt: "",
+  secret: "",
+  start: 0,
+  end: 0,
+  winner: ethers.ZeroAddress,
+});
+
+const award = ref("");
+const prompt = ref("");
+const secret = ref("");
+const startDate = ref("");
+const endDate = ref("");
 
 // Methods
 const closeCreateModal = () => {
   emit("closeCreateModal");
+};
+
+const submitMetadata = async () => {
+  // const currentTime = Math.floor(Date.now() / 1000); // Current timestamp in seconds
+
+  metadata.value.start = new Date(startDate.value).getTime() / 1000; // Convert startDate to timestamp
+  metadata.value.end = new Date(endDate.value).getTime() / 1000; // Convert endDate to timestamp
+  metadata.value.prompt = ethers.keccak256(ethers.toUtf8Bytes(prompt.value));
+  metadata.value.secret = ethers.keccak256(ethers.toUtf8Bytes(secret.value));
+
+  const metadataAward = ethers.parseUnits(award.value, 18);
+
+  // Output metadata object to console or use it in the application as needed
+  // console.log("Metadata object:", metadata.value);
+  // console.log("award:", metadataAward);
+  /*
+{
+    "name": "Project Nexus",
+    "description": "A collaborative AI for streamlining communication between distributed teams.",
+    "gameType": "secret",
+    "prompt": "0x0ab12c567b7ad80c41147c3c8ea8f1531453e7c653da51e39c8b6c43964af8a5",
+    "secret": "0x4eedc8faa297263c59be196499ae5e93ae9f6bada51cd9896af04487ddb2d3a5",
+    "start": 1725840000,
+    "end": 1725926400,
+    "winner": "0x0000000000000000000000000000000000000000"
+}
+"award": "11000000000000000000",
+  */
+
+  const { walletProvider } = useWeb3ModalProvider();
+  const { address, chainId, isConnected } = useWeb3ModalAccount();
+
+  await approve(walletProvider.value);
+
+  await mint(walletProvider.value, address.value, metadata.value, metadataAward);
 };
 </script>
 
