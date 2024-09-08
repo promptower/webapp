@@ -39,7 +39,7 @@
                     <div class="live-text">Live</div>
                   </div>
                 </div>
-                <img src="@/assets/nft/nft0.png" alt="nft" />
+                <img src="@/assets/nft/0.png" alt="nft" />
                 <div class="nft-title">MG12 Prompt</div>
                 <div class="nft-date-wrapper">
                   <div class="nft-date-text">Date</div>

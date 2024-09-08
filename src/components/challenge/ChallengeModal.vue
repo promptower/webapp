@@ -12,7 +12,7 @@
         </div>
         <div class="modal-info">
           <div class="modal-info-top">
-            <img src="@/assets/nft/nft0.png" alt="nft" />
+            <img src="@/assets/nft/0.png" alt="nft" />
             <div class="modal-info-title-wrapper">
               <div class="live-wrapper">
                 <svg
