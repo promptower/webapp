@@ -28,8 +28,22 @@
           Portfolio
         </div>
       </div>
-      <div class="wallet-btn">
+      <div class="wallet-btn" v-if="!isConnected" @click="connectWallet">
         <div class="wallet-text">Connect Wallet</div>
+      </div>
+      <div
+        class="wallet-connected-btn"
+        v-if="isConnected"
+        @click="connectWallet"
+      >
+        <img :src="walletInfo.icon" alt="wallet" />
+        <div class="wallet-connected-text">
+          {{
+            `${address.substring(0, 6)}...${address.substring(
+              address.length - 4
+            )}`
+          }}
+        </div>
       </div>
     </div>
   </div>
@@ -37,6 +51,13 @@
 
 <script setup>
 import { useRoute, useRouter } from "vue-router";
+
+import { useWeb3Modal, useWalletInfo, useWeb3ModalAccount } from "@/utils";
+
+// Reactive state
+const modal = useWeb3Modal();
+const { walletInfo } = useWalletInfo();
+const { address, chainId, isConnected } = useWeb3ModalAccount();
 
 // Methods
 const router = useRouter();
@@ -48,6 +69,10 @@ const navigateTo = (path) => {
 const route = useRoute();
 const isActiveRoute = (routes) => {
   return routes.includes(route.path);
+};
+
+const connectWallet = () => {
+  modal.open();
 };
 </script>
 
@@ -110,6 +135,7 @@ const isActiveRoute = (routes) => {
 .wallet-btn {
   display: flex;
   padding: 12px 30px;
+  height: 16px;
   justify-content: center;
   align-items: center;
   gap: 10px;
@@ -122,6 +148,36 @@ const isActiveRoute = (routes) => {
 }
 
 .wallet-text {
+  color: #000;
+  text-align: right;
+  font-family: Archivo;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.wallet-connected-btn {
+  display: flex;
+  padding: 12px 20px 12px 20px;
+  height: 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  border-radius: 20px;
+  border: 2px solid #000;
+  background: #cacaca;
+
+  cursor: pointer;
+}
+
+.wallet-connected-btn img {
+  width: 24px;
+  height: 24px;
+}
+
+.wallet-connected-text {
   color: #000;
   text-align: right;
   font-family: Archivo;
