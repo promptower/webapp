@@ -1,6 +1,7 @@
 <template>
   <div class="portfolio">
     <div class="portfolio-container">
+      <!-- Maker Section -->
       <div class="maker">
         <div class="maker-wrapper">
           <div class="maker-text">Maker</div>
@@ -20,11 +21,15 @@
               />
             </svg>
             <div class="maker-nfts">
-              <!-- repeeat -->
-              <div v-for="(item, index) in 4" class="nft-wrapper">
+              <!-- Maker NFTs -->
+              <div
+                v-for="(nft, index) in makerPortfolio.nfts"
+                :key="index"
+                class="nft-wrapper"
+              >
                 <div class="nft-status-wrapper">
                   <div class="type-wrapper">
-                    <div class="type-text">Secret</div>
+                    <div class="type-text">{{ nft.type }}</div>
                   </div>
                   <div class="live-wrapper">
                     <svg
@@ -36,27 +41,27 @@
                     >
                       <circle cx="6" cy="6.02026" r="5.5" fill="#53926D" />
                     </svg>
-                    <div class="live-text">Live</div>
+                    <div class="live-text">{{ nft.status }}</div>
                   </div>
                 </div>
-                <img src="@/assets/nft/0.png" alt="nft" />
-                <div class="nft-title">MG12 Prompt</div>
+                <img :src="nft.image" alt="nft" />
+                <div class="nft-title">{{ nft.title }}</div>
                 <div class="nft-date-wrapper">
                   <div class="nft-date-text">Date</div>
                   <div class="nft-date-content-wrapper">
-                    <div class="nft-date-content-text">08.30 5:00 AM(UST)</div>
-                    <div class="nft-date-content-text">
-                      ~ 09.13 5:00 AM(UST)
-                    </div>
+                    <div class="nft-date-content-text">{{ nft.startDate }}</div>
+                    <div class="nft-date-content-text">{{ nft.endDate }}</div>
                   </div>
                 </div>
                 <div class="nft-duration-wrapper">
                   <div class="nft-duration-text">Duration</div>
-                  <div class="nft-duration-content-text">14 days</div>
+                  <div class="nft-duration-content-text">
+                    {{ nft.duration }}
+                  </div>
                 </div>
                 <div class="nft-award-wrapper">
                   <div class="nft-award-text">Award</div>
-                  <div class="nft-award-content-text">6,000 USDC</div>
+                  <div class="nft-award-content-text">{{ nft.award }}</div>
                 </div>
               </div>
             </div>
@@ -87,20 +92,23 @@
               <div class="detail-title-date-text">Date</div>
               <div class="detail-title-text">Award</div>
             </div>
-            <!-- repeat -->
-            <div v-for="(item, index) in 4" class="detail-table-content">
-              <div class="detail-content-text">1</div>
-              <div class="detail-content-name-text">MG12 Prompt</div>
-              <div class="detail-content-text">End</div>
-              <div class="detail-content-text">Slang</div>
-              <div class="detail-content-date-text">
-                08.30 5:00 AM(UST) ~ 08.30 5:00 AM(UST)
-              </div>
-              <div class="detail-content-text">60,000 USDC</div>
+            <!-- Maker Details -->
+            <div
+              v-for="(item, index) in makerPortfolio.details"
+              :key="index"
+              class="detail-table-content"
+            >
+              <div class="detail-content-text">{{ item.id }}</div>
+              <div class="detail-content-name-text">{{ item.name }}</div>
+              <div class="detail-content-text">{{ item.status }}</div>
+              <div class="detail-content-text">{{ item.type }}</div>
+              <div class="detail-content-date-text">{{ item.dateRange }}</div>
+              <div class="detail-content-text">{{ item.award }}</div>
             </div>
           </div>
         </div>
       </div>
+      <!-- Solver Section -->
       <div class="solver">
         <div class="solver-title-text">Solver</div>
         <div class="solver-table">
@@ -112,16 +120,18 @@
             <div class="solver-top-date-text">Date</div>
             <div class="solver-top-text">Award</div>
           </div>
-          <!-- repeat -->
-          <div v-for="(item, index) in 4" class="solver-table-content">
-            <div class="solver-content-text">1</div>
-            <div class="solver-content-name-text">MG12 Prompt</div>
-            <div class="solver-content-text">End</div>
-            <div class="solver-content-text">Slang</div>
-            <div class="solver-content-date-text">
-              08.30 5:00 AM(UST) ~ 08.30 5:00 AM(UST)
-            </div>
-            <div class="solver-content-text">60,000 USDC</div>
+          <!-- Solver Details -->
+          <div
+            v-for="(item, index) in solverPortfolio.details"
+            :key="index"
+            class="solver-table-content"
+          >
+            <div class="solver-content-text">{{ item.id }}</div>
+            <div class="solver-content-name-text">{{ item.name }}</div>
+            <div class="solver-content-text">{{ item.status }}</div>
+            <div class="solver-content-text">{{ item.type }}</div>
+            <div class="solver-content-date-text">{{ item.dateRange }}</div>
+            <div class="solver-content-text">{{ item.award }}</div>
           </div>
         </div>
       </div>
@@ -129,7 +139,92 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { useWeb3ModalAccount, useWeb3ModalProvider } from "@/utils";
+import { getPortfolioMaker, getPortfolioSolver } from "@/utils/gameView";
+import { ref, onMounted } from "vue";
+import { ethers } from "ethers";
+
+// Helper function to convert timestamps and BigInt values
+const formatDate = (timestamp) => {
+  const date = new Date(timestamp * 1000);
+  return date.toLocaleString("en-US", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const calculateDuration = (startDate, endDate) => {
+  const diffInSeconds = endDate - startDate;
+  const days = diffInSeconds / (60 * 60 * 24);
+  return Math.round(days);
+};
+
+const formatAward = (award) => {
+  // return award;
+  return ethers.formatUnits(award.toString(), 18);
+};
+
+// State to hold maker and solver portfolio data
+const makerPortfolio = ref({
+  nfts: [],
+  details: [],
+});
+
+const solverPortfolio = ref({
+  details: [],
+});
+
+const parsePortfolioResult = (result) => {
+  return result.map((item) => ({
+    id: item[0].toString(),
+    name: item[1],
+    description: item[2],
+    type: item[3],
+    image: item[4],
+    startDate: formatDate(Number(item[5])),
+    endDate: formatDate(Number(item[6])),
+    award: formatAward(item[7]) + " USDC",
+    status:
+      item[8] === "0x0000000000000000000000000000000000000000" ? "Live" : "End",
+  }));
+};
+
+const fetchMakerPortfolio = async () => {
+  const { address } = useWeb3ModalAccount();
+
+  try {
+    const makerResult = await getPortfolioMaker(address.value);
+    makerPortfolio.value = {
+      nfts: parsePortfolioResult(makerResult.slice(-4)), // Select the last 4 NFTs
+      details: parsePortfolioResult(makerResult.slice(-4)), // Select the last 4 details
+    };
+  } catch (error) {
+    console.error("Error fetching Maker portfolio:", error);
+  }
+};
+
+const fetchSolverPortfolio = async () => {
+  const { address } = useWeb3ModalAccount();
+
+  try {
+    const solverResult = await getPortfolioSolver(address.value);
+    solverPortfolio.value = {
+      details: parsePortfolioResult(solverResult),
+    };
+  } catch (error) {
+    console.error("Error fetching Solver portfolio:", error);
+  }
+};
+
+// Fetch data on component mount
+onMounted(() => {
+  fetchMakerPortfolio();
+  fetchSolverPortfolio();
+});
+</script>
 
 <style scoped>
 .portfolio {
