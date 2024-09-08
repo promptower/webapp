@@ -11,7 +11,7 @@
           :class="{ 'menu-text-active': isActiveRoute(['/challenge']) }"
           @click="navigateTo('/challenge')"
         >
-          Challenge
+          Challenges
         </div>
         <div
           class="menu-text"

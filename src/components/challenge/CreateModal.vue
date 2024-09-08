@@ -11,7 +11,7 @@
           />
         </div>
         <div class="about-wrapper">
-          <div class="about-text">About you</div>
+          <div class="about-text">Create A New Challange</div>
         </div>
         <div class="content-wrapper">
           <div class="content-left-wrapper">
@@ -51,9 +51,9 @@
                 <div class="type-content-wrapper">
                   <div class="type-content-text">Secret</div>
                 </div>
-                <div class="type-content-wrapper">
+                <!-- <div class="type-content-wrapper">
                   <div class="type-content-text">Slang</div>
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="description-wrapper">

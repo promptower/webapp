@@ -1,7 +1,7 @@
 <template>
   <div v-if="!showModal && !showCreateModal" class="challenge">
     <div class="challenge-wrapper">
-      <div class="challenge-title-text">Challenge</div>
+      <div class="challenge-title-text">Challenges</div>
       <div class="challenge-live-filter">
         <div
           class="challenge-live-filter-btn"
@@ -70,7 +70,7 @@
           </div>
         </div>
         <div class="challenge-create-new-btn" @click="openCreateModal">
-          +Create New Challange
+          + Create A New Challange
         </div>
       </div>
       <div class="nfts">
