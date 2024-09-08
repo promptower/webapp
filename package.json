@@ -1,5 +1,6 @@
 {
-  "name": "-webapp",
+  "name": "webapp",
+  "homepage": "https://promptower.github.io/webapp/",
   "version": "0.0.0",
   "private": true,
   "type": "module",
