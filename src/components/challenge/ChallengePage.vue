@@ -270,7 +270,7 @@ const closeCreateModal = () => {
 };
 
 const fetchNftData = async () => {
-  const result = await getGames(0, 12); // TODO
+  const result = await getGames(0, 1000); // TODO
 
   nftData.value = result
     .map((nft) => {
