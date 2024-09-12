@@ -110,7 +110,11 @@
 import { ethers } from "ethers";
 import { ref } from "vue";
 
-import { useWeb3ModalAccount, useWeb3ModalProvider } from "@/utils";
+import {
+  // wallet
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+} from "@/utils";
 import { approve, mint } from "@/utils/game";
 
 // Define emits
@@ -159,6 +163,14 @@ const validateConditions = () => {
 
   // metadata
   if (!isConnected.value) return false;
+
+  // condition1: prompt & secret
+  if (!prompt.value.includes(secret.value)) return false;
+  
+  // condition2: start & end timstamp
+  const startTimstamp = new Date(startDate.value).getTime() / 1000;
+  const endTimstamp = new Date(endDate.value).getTime() / 1000;
+  if (startTimstamp >= endTimstamp) return false;
 
   return true;
 };
