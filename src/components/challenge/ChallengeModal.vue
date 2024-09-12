@@ -149,7 +149,7 @@ const props = defineProps({
 });
 
 // Emit event to close the modal
-const emit = defineEmits(["closeModal"]);
+const emit = defineEmits(["closeModal", "updateNftsData"]);
 const question = ref("");
 const answer = ref("");
 const secret = ref("");
@@ -197,6 +197,8 @@ const submitSecret = async () => {
     // TODO wait hash
     confirmMessage.value = "You successfully solved the problem. ";
     confirmType.value = 1;
+
+    emit("updateNftsData");
   } else {
     confirmMessage.value = "Wrong answer. Please try again.";
     confirmType.value = 0;

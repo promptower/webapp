@@ -252,6 +252,7 @@
     v-if="showModal"
     :nft="selectedNft"
     @closeModal="closeModal"
+    @updateNftsData="fetchNftData"
   />
   <CreateModal v-if="showCreateModal" @closeCreateModal="closeCreateModal" />
 </template>

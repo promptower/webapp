@@ -141,7 +141,7 @@ import {
 import { approve, mint } from "@/utils/game";
 
 // Define emits
-const emit = defineEmits(["closeCreateModal"]);
+const emit = defineEmits(["closeCreateModal", "updateNftsData"]);
 
 // State for inputs
 const metadata = ref({
@@ -243,6 +243,8 @@ const submitMetadata = async () => {
       metadata.value,
       metadataAward
     );
+   
+    emit("updateNftsData");
   }
 };
 </script>
