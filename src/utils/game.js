@@ -126,7 +126,57 @@ async function mint(
     }
 }
 
+async function solve(
+    walletProvider,
+    tokenId, secret
+) {
+    await attach(walletProvider);
+
+    const tokenIdHex = ethers.zeroPadValue("0x" + (tokenId).toString(16), 32);
+    console.log("tokenIdHex:", tokenIdHex);
+
+    const secretHash = ethers.keccak256(ethers.toUtf8Bytes(`${secret}`));
+    let sig;
+    {
+        const coder = ethers.AbiCoder.defaultAbiCoder();
+        const packedData = coder.encode(
+            [
+                "bytes32",
+                "bytes32",
+            ],
+            [
+                tokenIdHex,
+                secretHash
+            ]
+        );
+        sig = await signer.signMessage(
+            ethers.getBytes(ethers.keccak256(packedData))
+        );
+    }
+
+    console.log(tokenId.toString());
+    console.log(secretHash);
+    console.log(signer.address);
+    console.log(sig);
+
+    // try {
+    //     let response = await contracts.Game.connect(signer).solved(
+    //         tokenId.toString(), secretHash, signer.address, sig,
+    //         {
+    //             ...GAS_INFO,
+    //         }
+    //     );
+    //     // await response.wait();
+    //     await waitForTransaction(response.hash);
+    //     return response;
+    // } catch (error) {
+    //     console.error(error);
+    //     return;
+    // }
+}
+
 export {
     approve,
     mint,
+    solve,
 }

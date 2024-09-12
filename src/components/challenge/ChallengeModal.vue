@@ -108,12 +108,18 @@
 <script setup>
 import { ref } from "vue";
 
-import { useWeb3Modal, useWalletInfo, useWeb3ModalAccount } from "@/utils";
-import config from "@/config";
+import {
+  useWeb3Modal,
+  useWalletInfo,
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+} from "@/utils";
+import { solve } from "@/utils/game";
 
 // Reactive state
 const modal = useWeb3Modal();
 const { walletInfo } = useWalletInfo();
+const { walletProvider } = useWeb3ModalProvider();
 const { address, chainId, isConnected } = useWeb3ModalAccount();
 
 // Props
@@ -157,7 +163,9 @@ const callGPT = async () => {
   }
 };
 
-const submitSecret = async () => {};
+const submitSecret = async () => {
+  await solve(walletProvider.value, props.nft.tokenId, answer.value);
+};
 
 const closeModal = () => {
   emit("closeModal");
