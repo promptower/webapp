@@ -93,7 +93,7 @@
           <div class="pk-wrapper">
             <div class="pk-title-text">Secret</div>
             <div class="pk-content-wrapper">
-              <input class="pk-content-input" />
+              <textarea class="pk-content-input" type="text" v-model="secret" />
               <div class="submit-btn" @click="submitSecret()">
                 <div class="submit-text">Submit</div>
               </div>
@@ -134,6 +134,7 @@ const props = defineProps({
 const emit = defineEmits(["closeModal"]);
 const question = ref("");
 const answer = ref("");
+const secret = ref("");
 
 const callGPT = async () => {
   const url =
@@ -164,7 +165,7 @@ const callGPT = async () => {
 };
 
 const submitSecret = async () => {
-  await solve(walletProvider.value, props.nft.tokenId, answer.value);
+  await solve(walletProvider.value, props.nft.tokenId, secret.value);
 };
 
 const closeModal = () => {
