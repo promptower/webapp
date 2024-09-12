@@ -94,7 +94,7 @@
             <div class="pk-title-text">Secret</div>
             <div class="pk-content-wrapper">
               <input class="pk-content-input" />
-              <div class="submit-btn">
+              <div class="submit-btn" @click="submitSecret()">
                 <div class="submit-text">Submit</div>
               </div>
             </div>
@@ -156,6 +156,8 @@ const callGPT = async () => {
     console.error("Error:", error);
   }
 };
+
+const submitSecret = async () => {};
 
 const closeModal = () => {
   emit("closeModal");
