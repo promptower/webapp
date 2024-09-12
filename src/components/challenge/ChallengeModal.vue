@@ -64,7 +64,7 @@
             <div class="details-title-wrapper">
               <div class="details-award-text">Awards</div>
               <div class="details-award-text">
-                {{ formatAward(nft.awards) }} in USDC
+                {{ formatAward(nft.awards) }} USDC
               </div>
             </div>
           </div>
@@ -74,7 +74,7 @@
           <div class="question-wrapper">
             <div class="question-title-text">Question</div>
             <div class="question-content-wrapper">
-              <input
+              <textarea
                 class="question-content-input"
                 type="text"
                 v-model="question"
@@ -86,11 +86,8 @@
           </div>
           <div class="answer-wrapper">
             <div class="answer-title-text">Answer</div>
-            <div class="answer-content-wrapper">
-              <div class="answer-content-input">
-                {{ answer }}
-              </div>
-              <div class="empty-box"></div>
+            <div class="answer-content-input">
+              {{ answer }}
             </div>
           </div>
           <div class="pk-wrapper">
@@ -440,12 +437,23 @@ const formatAward = (award) => {
 }
 
 .question-content-input {
-  height: 80px;
+  height: 112px;
   flex: 1 0 0;
+  padding: 20px 30px;
 
   border-radius: 20px;
   border: 2px solid #000;
   background: #fff;
+
+  color: #000;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: Archivo;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+  box-sizing: border-box;
 }
 
 .submit-btn {
@@ -459,6 +467,8 @@ const formatAward = (award) => {
   border-radius: 20px;
   border: 2px solid #000;
   background: #53926d;
+
+  cursor: pointer;
 }
 
 .submit-text {
@@ -490,30 +500,26 @@ const formatAward = (award) => {
   line-height: normal;
 }
 
-.answer-content-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  align-self: stretch;
-}
-
 .answer-content-input {
-  height: 40px;
-  flex: 1 0 0;
+  padding: 20px 30px;
+  min-height: 40px;
+  width: 100%;
 
   border-radius: 20px;
   border: 2px solid #000;
   background: #fff;
-}
 
-.empty-box {
-  display: flex;
-  width: 120px;
-  padding: 10px 30px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
+  color: #000;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: Archivo;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .pk-wrapper {
@@ -543,11 +549,23 @@ const formatAward = (award) => {
 }
 
 .pk-content-input {
+  display: flex;
+  padding: 8px 30px;
   height: 40px;
   flex: 1 0 0;
 
   border-radius: 20px;
   border: 2px solid #000;
   background: #fff;
+
+  color: #000;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: Archivo;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
+  box-sizing: border-box;
 }
 </style>
