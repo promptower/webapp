@@ -133,7 +133,7 @@ async function solve(
     await attach(walletProvider);
 
     const tokenIdHex = ethers.zeroPadValue("0x" + (tokenId).toString(16), 32);
-    console.log("tokenIdHex:", tokenIdHex);
+    // console.log("tokenIdHex:", tokenIdHex);
 
     const secretHash = ethers.keccak256(ethers.toUtf8Bytes(`${secret}`));
     let sig;
@@ -154,10 +154,40 @@ async function solve(
         );
     }
 
-    console.log(tokenId.toString());
-    console.log(secretHash);
-    console.log(signer.address);
-    console.log(sig);
+    // console.log(tokenId.toString());
+    // console.log(secretHash);
+    // console.log(signer.address);
+    // console.log(sig);
+
+    const data = { tokenId: tokenId.toString(), secretHash, user: signer.address, sig };
+
+    const url =
+        "https://ib9fm6yjjg.execute-api.ap-northeast-2.amazonaws.com/ctp/ctp/submit-secret";
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+        console.log(result.status);
+        console.log(result.hash);
+
+        return {
+            status: result.status,
+            hash: result.hash,
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        return {
+            status: false,
+            hash: "",
+        }
+    }
 
     // try {
     //     let response = await contracts.Game.connect(signer).solved(

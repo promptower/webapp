@@ -103,9 +103,12 @@
       </div>
     </div>
   </div>
+  <ConfirmModal />
 </template>
 
 <script setup>
+import ConfirmModal from "@/components/common/ConfirmModal.vue";
+
 import { ref } from "vue";
 
 import {
@@ -165,7 +168,16 @@ const callGPT = async () => {
 };
 
 const submitSecret = async () => {
-  await solve(walletProvider.value, props.nft.tokenId, secret.value);
+  // TODO loading
+  const { status, hash } = await solve(
+    walletProvider.value,
+    props.nft.tokenId,
+    secret.value
+  );
+
+  if (status) {
+  } else {
+  }
 };
 
 const closeModal = () => {
