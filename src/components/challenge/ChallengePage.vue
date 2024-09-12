@@ -166,13 +166,19 @@
             <div class="nft-award-wrapper">
               <div
                 class="nft-award-text"
-                :class="{ 'is-verified-nft-text': item.status === 'Verified' }"
+                :class="{
+                  'is-verified-nft-text': item.status === 'Verified',
+                  // 'is-solved-nft-text': item.status === 'Solved',
+                }"
               >
                 Award
               </div>
               <div
                 class="nft-award-content-text"
-                :class="{ 'is-verified-nft-text': item.status === 'Verified' }"
+                :class="{
+                  'is-verified-nft-text': item.status === 'Verified',
+                  'is-solved-nft-text': item.status === 'Solved',
+                }"
               >
                 {{ formatAward(item.awards) }} USDC
               </div>
@@ -180,7 +186,10 @@
           </div>
           <div
             class="nft-btn"
-            :class="{ 'is-live': item.status === 'Live' }"
+            :class="{
+              'is-live': item.status === 'Live',
+              'is-verified': item.status === 'Verified',
+            }"
             @click="item.status !== 'Solved' && openModal(item)"
           >
             <div class="nft-btn-text">
@@ -278,8 +287,6 @@ const fetchNftData = async () => {
         status = "Verified";
       } else if (winnerAddress !== ethers.ZeroAddress) {
         status = "Solved";
-      } else if (currentTime > Number(nft[9])) {
-        status = "End";
       }
 
       return {
@@ -702,6 +709,10 @@ onMounted(() => {
   color: #000f;
 }
 
+.is-solved-nft-text {
+  text-decoration-line: line-through;
+}
+
 .nft-btn {
   display: flex;
   padding: 10px 30px;
@@ -718,6 +729,10 @@ onMounted(() => {
   background: #53926d;
 
   cursor: pointer;
+}
+
+.is-verified {
+  background: #4dc4cf;
 }
 
 .nft-btn-text {
