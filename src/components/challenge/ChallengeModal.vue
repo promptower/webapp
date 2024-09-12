@@ -79,8 +79,8 @@
                 type="text"
                 v-model="question"
               />
-              <div class="submit-btn">
-                <div class="submit-text" @click="callGPT()">Submit</div>
+              <div class="submit-btn" @click="callGPT()">
+                <div class="submit-text">Submit</div>
               </div>
             </div>
           </div>
@@ -131,11 +131,12 @@ const answer = ref("");
 
 const callGPT = async () => {
   const url =
-    "https://ib9fm6yjjg.execute-api.ap-northeast-2.amazonaws.com/ctp/gpt";
+    "https://ib9fm6yjjg.execute-api.ap-northeast-2.amazonaws.com/ctp/ctp/qa";
   const data = {
+    token_id: props.nft.id,
     user: address.value,
-    nft: config.contracts.Badge,
-    prompt: question.value,
+    prompt_hash: props.nft.promptHash,
+    question: question.value,
   };
 
   try {
