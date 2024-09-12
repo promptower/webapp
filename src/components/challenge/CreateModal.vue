@@ -33,10 +33,33 @@
               />
             </div>
             <div class="date-wrapper">
-              <div class="date-text">Date</div>
+              <div class="date-text">Start Date</div>
               <div class="date-input-wrapper">
-                <input class="date-input" v-model="startDate" type="date" />
-                <input class="date-input" v-model="endDate" type="date" />
+                <input
+                  class="date-input"
+                  v-model="startDate"
+                  type="datetime-local"
+                />
+                <!-- <input
+                  class="date-input"
+                  v-model="endDate"
+                  type="datetime-local"
+                /> -->
+              </div>
+            </div>
+            <div class="date-wrapper">
+              <div class="date-text">End Date</div>
+              <div class="date-input-wrapper">
+                <!-- <input
+                  class="date-input"
+                  v-model="startDate"
+                  type="datetime-local"
+                /> -->
+                <input
+                  class="date-input"
+                  v-model="endDate"
+                  type="datetime-local"
+                />
               </div>
             </div>
             <div class="award-wrapper">
@@ -77,7 +100,7 @@
             <div class="description-wrapper">
               <div class="description-text">Prompt</div>
               <textarea
-                class="description-input"
+                class="prompt-input"
                 v-model="prompt"
                 placeholder="Prompt"
               />
@@ -329,7 +352,7 @@ const submitMetadata = async () => {
 
 .name-input {
   display: flex;
-  height: 24px;
+  height: 40px;
   padding: 8px 30px;
   align-items: center;
   gap: 10px;
@@ -346,6 +369,8 @@ const submitMetadata = async () => {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+
+  box-sizing: border-box;
 }
 
 .description-wrapper {
@@ -367,7 +392,8 @@ const submitMetadata = async () => {
   line-height: normal;
 }
 
-.description-input {
+.description-input,
+.prompt-input {
   display: flex;
   height: 201px;
   padding: 20px 30px;
@@ -388,6 +414,10 @@ const submitMetadata = async () => {
   line-height: normal;
 
   box-sizing: border-box;
+}
+
+.description-input {
+  height: 111px;
 }
 
 .date-wrapper {
@@ -411,8 +441,9 @@ const submitMetadata = async () => {
 
 .date-input-wrapper {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  gap: 20px;
+  gap: 12px;
   align-self: stretch;
 }
 
@@ -423,7 +454,8 @@ const submitMetadata = async () => {
   justify-content: center;
   align-items: center;
   gap: 10px;
-  flex: 1 0 0;
+  width: 100%;
+  /* flex: 1 0 0; */
 
   border-radius: 20px;
   border: 2px solid #000;
@@ -609,8 +641,8 @@ const submitMetadata = async () => {
 }
 
 .submit-btn-wrapper {
-  display: flex;
-  /* width: 179.5px; */
+  /* display: flex; */
+  width: 175px;
   height: 40px;
   padding: 8px 30px;
   text-align: center;
