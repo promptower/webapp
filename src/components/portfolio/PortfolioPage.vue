@@ -157,9 +157,8 @@
             <div class="solver-content-text">{{ index + 1 }}</div>
             <div class="solver-content-name-text">{{ item.name }}</div>
             <div class="solver-content-name-text">{{ item.type }}</div>
-            <div class="detail-content-date-text">
-              {{ formatDate(item.startDate) }} ~ {{ formatDate(item.endDate) }}
-            </div>
+            <!-- TODO o & x -->
+            <div class="detail-content-date-text">o</div>
             <div class="detail-content-text">{{ formatAward(item.award) }}</div>
           </div>
           <div
