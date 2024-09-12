@@ -63,17 +63,15 @@
                 <div
                   class="type-content-wrapper"
                   :class="{ 'is-type-active': typeIndex == 1 }"
-                  @click="changeTypeIndex(1)"
                 >
                   <div class="type-content-text">Slang</div>
                 </div>
-                <!-- <div
+                <div
                   class="type-content-wrapper"
                   :class="{ 'is-type-active': typeIndex == 2 }"
-                  @click="changeTypeIndex(2)"
                 >
                   <div class="type-content-text">Mismatch</div>
-                </div> -->
+                </div>
               </div>
             </div>
             <div class="description-wrapper">
@@ -168,7 +166,7 @@ const validateConditions = () => {
 
   // condition1: prompt & secret
   if (!prompt.value.includes(secret.value)) return false;
-  
+
   // condition2: start & end timstamp
   const startTimstamp = new Date(startDate.value).getTime() / 1000;
   const endTimstamp = new Date(endDate.value).getTime() / 1000;
