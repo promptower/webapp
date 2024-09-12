@@ -261,12 +261,22 @@ const fetchNftData = async () => {
 // Utility methods
 const formatDate = (timestamp) => {
   const date = new Date(timestamp * 1000);
-  return date.toLocaleString("en-US", {
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const hours = date.getUTCHours();
+  const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+
+  const period = hours >= 12 ? "PM" : "AM";
+  const formattedHour = hours % 12 || 12;
+
+  return `${month}.${day} ${formattedHour}:${minutes} ${period}`;
+  // return date.toLocaleString("en-US", {
+  //   month: "2-digit",
+  //   day: "2-digit",
+  //   hour: "2-digit",
+  //   minute: "2-digit",
+  // });
 };
 
 const calculateDuration = (startDate, endDate) => {
