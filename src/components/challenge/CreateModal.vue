@@ -125,9 +125,18 @@
       </div>
     </div>
   </div>
+
+  <ConfirmModal
+    v-if="confirmType === 0 || confirmType === 1"
+    :confirmType="confirmType"
+    :message="confirmMessage"
+    @closeConfirmModal="closeConfirmModal"
+  />
 </template>
 
 <script setup>
+import ConfirmModal from "@/components/common/ConfirmModal.vue";
+
 import { ethers } from "ethers";
 import { ref } from "vue";
 
@@ -164,6 +173,9 @@ const endDate = ref("");
 
 const typeIndex = ref(0);
 
+const confirmType = ref(null);
+const confirmMessage = ref("");
+
 const { walletProvider } = useWeb3ModalProvider();
 const { address, chainId, isConnected } = useWeb3ModalAccount();
 
@@ -172,28 +184,54 @@ const closeCreateModal = () => {
   emit("closeCreateModal");
 };
 
+const closeConfirmModal = () => {
+  const preConfirmType = confirmType.value;
+
+  confirmType.value = "";
+  emit("closeConfirmModal");
+  if (preConfirmType === 1) emit("closeCreateModal");
+};
+
 const changeTypeIndex = (index) => {
   typeIndex.value = index;
 };
 
 const validateConditions = () => {
   // metadata
-  if (award.value === "") return false;
-  if (prompt.value == "") return false;
-  if (secret.value == "") return false;
-  if (startDate.value == "") return false;
-  if (endDate.value == "") return false;
-
+  if (
+    award.value === "" ||
+    prompt.value == "" ||
+    secret.value == "" ||
+    startDate.value == "" ||
+    endDate.value == ""
+  ) {
+    confirmType.value = 0;
+    confirmMessage.value = "Please enter all the data.";
+    return false;
+  }
+  
   // metadata
-  if (!isConnected.value) return false;
-
+  if (!isConnected.value) {
+    confirmType.value = 0;
+    confirmMessage.value = "Please connect your wallet.";
+    return false;
+  }
+  
   // condition1: prompt & secret
-  if (!prompt.value.includes(secret.value)) return false;
-
+  if (!prompt.value.includes(secret.value)) {
+    confirmType.value = 0;
+    confirmMessage.value = "The prompt does not contain a secret.";
+    return false;
+  }
+  
   // condition2: start & end timstamp
   const startTimstamp = new Date(startDate.value).getTime() / 1000;
   const endTimstamp = new Date(endDate.value).getTime() / 1000;
-  if (startTimstamp >= endTimstamp) return false;
+  if (startTimstamp >= endTimstamp) {
+    confirmType.value = 0;
+    confirmMessage.value = "The end time must be later than the start time.";
+    return false;
+  }
 
   return true;
 };
@@ -243,7 +281,10 @@ const submitMetadata = async () => {
       metadata.value,
       metadataAward
     );
-   
+
+    confirmMessage.value = "You successfully registered the project.";
+    confirmType.value = 1;
+
     emit("updateNftsData");
   }
 };
