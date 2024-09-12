@@ -115,10 +115,25 @@ const formatAddress = (address) => {
   return address;
 };
 
+let intervalId = null;
+
 // Fetch data when the component is mounted
-onMounted(() => {
-  fetchOverview();
-  fetchLeaderboard();
+onMounted(async () => {
+  // console.log("leaderboard:fetchLeaderboard");
+  await fetchOverview();
+  await fetchLeaderboard();
+  intervalId = setInterval(async () => {
+    // console.log("leaderboard:fetchLeaderboard");
+    await fetchOverview();
+    await fetchLeaderboard();
+  }, 15000);
+});
+
+onBeforeUnmount(() => {
+  if (intervalId) {
+    clearInterval(intervalId);
+    // console.log("Interval cleared");
+  }
 });
 </script>
 

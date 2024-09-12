@@ -181,7 +181,7 @@
 <script setup>
 import { useWeb3ModalAccount, useWeb3ModalProvider } from "@/utils";
 import { getPortfolioMaker, getPortfolioSolver } from "@/utils/gameView";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import { ethers } from "ethers";
 
 // Utility methods to format date and award
@@ -274,10 +274,25 @@ const fetchSolverPortfolio = async () => {
   }
 };
 
+let intervalId = null;
+
 // Fetch data on component mount
-onMounted(() => {
-  fetchMakerPortfolio();
-  fetchSolverPortfolio();
+onMounted(async () => {
+  // console.log("portfolio:fetchMakerPortfolio");
+  await fetchMakerPortfolio();
+  await fetchSolverPortfolio();
+  intervalId = setInterval(async () => {
+    // console.log("portfolio:fetchMakerPortfolio");
+    await fetchMakerPortfolio();
+    await fetchSolverPortfolio();
+  }, 15000);
+});
+
+onBeforeUnmount(() => {
+  if (intervalId) {
+    clearInterval(intervalId);
+    // console.log("Interval cleared");
+  }
 });
 </script>
 

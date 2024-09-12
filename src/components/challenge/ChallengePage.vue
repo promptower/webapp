@@ -463,9 +463,23 @@ const formatDescription = (description) => {
   return description;
 };
 
+let intervalId = null;
+
 // Fetch data when component is mounted
-onMounted(() => {
-  fetchNftData();
+onMounted(async () => {
+  // console.log("challenge:fetchNftData");
+  await fetchNftData();
+  intervalId = setInterval(async () => {
+    // console.log("challenge:fetchNftData");
+    await fetchNftData();
+  }, 15000);
+});
+
+onBeforeUnmount(() => {
+  if (intervalId) {
+    clearInterval(intervalId);
+    // console.log("Interval cleared");
+  }
 });
 </script>
 
