@@ -1,6 +1,8 @@
 <template>
   <TopBar v-if="route.path != '/'" />
-  <router-view class="router" />
+  <div class="router">
+    <router-view />
+  </div>
   <Footer v-if="route.path != '/'" />
 </template>
 
@@ -22,7 +24,7 @@ body {
 }
 
 .router {
-  margin-top: 30px;
-  min-height: calc(100vh - 351px);
+  margin-top: 40px;
+  min-height: calc(100vh - 361px);
 }
 </style>
