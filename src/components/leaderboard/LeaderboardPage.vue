@@ -207,7 +207,7 @@ onMounted(() => {
 }
 
 .title-verified-text {
-  color: rgba(252, 75, 59, 0.7);
+  color: #4DC4CF;
   font-feature-settings: "liga" off, "clig" off;
   font-family: Archivo;
   font-size: 14px;
@@ -217,7 +217,7 @@ onMounted(() => {
 }
 
 .content-verified-text {
-  color: #fc4b3b;
+  color: #4DC4CF;
   font-feature-settings: "liga" off, "clig" off;
   font-family: Archivo;
   font-size: 50px;
