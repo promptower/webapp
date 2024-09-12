@@ -339,7 +339,10 @@ const calculateDuration = (startDate, endDate) => {
 
 const formatAward = (award) => {
   // return award;
-  return ethers.formatUnits(award.toString(), 18);
+  return ethers.formatUnits(
+    award.toLocaleString("fullwide", { useGrouping: false }),
+    18
+  );
 };
 
 const formatAddress = (address) => {
