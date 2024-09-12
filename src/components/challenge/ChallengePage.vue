@@ -224,7 +224,7 @@ const fetchNftData = async () => {
 
   nftData.value = result
     .map((nft) => {
-      const winnerAddress = nft[10];
+      const winnerAddress = nft[11];
       const currentTime = Math.floor(Date.now() / 1000);
 
       console.log(winnerAddress);
@@ -236,7 +236,7 @@ const fetchNftData = async () => {
         status = "Verified";
       } else if (winnerAddress !== ethers.ZeroAddress) {
         status = "Solved";
-      } else if (currentTime > Number(nft[8])) {
+      } else if (currentTime > Number(nft[9])) {
         status = "End";
       }
 
@@ -244,15 +244,16 @@ const fetchNftData = async () => {
         status,
         winnerAddress,
         id: nft[0],
-        name: nft[1],
-        description: nft[2],
-        gameType: nft[3],
-        promptHash: nft[4],
-        secretHash: nft[5],
-        imageUri: nft[6],
-        startDate: Number(nft[7]),
-        endDate: Number(nft[8]),
-        awards: Number(nft[9]),
+        tokenId: nft[1],
+        name: nft[2],
+        description: nft[3],
+        gameType: nft[4],
+        promptHash: nft[5],
+        secretHash: nft[6],
+        imageUri: nft[7],
+        startDate: Number(nft[8]),
+        endDate: Number(nft[9]),
+        awards: Number(nft[10]),
       };
     })
     .reverse(); // Reverse the array here

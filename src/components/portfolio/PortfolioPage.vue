@@ -231,17 +231,18 @@ const solverPortfolio = ref({
 const parsePortfolioResult = (result) => {
   return result.map((item) => ({
     id: item[0].toString(),
-    name: item[1],
-    description: item[2],
-    type: item[3],
-    promptHash: item[4],
-    secretHash: item[5],
-    image: item[6],
-    startDate: Number(item[7]),
-    endDate: Number(item[8]),
-    award: item[9],
+    tokenId: item[1],
+    name: item[2],
+    description: item[3],
+    type: item[4],
+    promptHash: item[5],
+    secretHash: item[6],
+    image: item[7],
+    startDate: Number(item[8]),
+    endDate: Number(item[9]),
+    award: item[10],
     status:
-      item[10] === "0x0000000000000000000000000000000000000000"
+      item[11] === "0x0000000000000000000000000000000000000000"
         ? "Live"
         : "End",
   }));
