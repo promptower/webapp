@@ -1,4 +1,4 @@
-import contracts from "./contracts.json";
+import contracts from "./wemixtestnet/contracts.json";
 
 const config = {
     contracts,
