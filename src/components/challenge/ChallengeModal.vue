@@ -133,7 +133,7 @@ const callGPT = async () => {
   const url =
     "https://ib9fm6yjjg.execute-api.ap-northeast-2.amazonaws.com/ctp/ctp/qa";
   const data = {
-    token_id: props.nft.id,
+    token_id: props.nft.id.toString(),
     user: address.value,
     prompt_hash: props.nft.promptHash,
     question: question.value,
