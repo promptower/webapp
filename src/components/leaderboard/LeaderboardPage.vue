@@ -36,23 +36,21 @@
             <div class="solved-text">Solved</div>
           </div>
           <!-- Leaderboard items -->
-          <div v-if="leaderboard.length > 0" class="table-content-wrapper">
-            <div v-for="(solver, index) in leaderboard" :key="index">
-              <div class="rank-content-text">{{ index + 1 }}</div>
-              <div class="challenger-content-text">
-                {{ formatAddress(solver.address) }}
-              </div>
-              <div class="award-content-text">
-                {{ formatAward(solver.award) }}
-              </div>
-              <div class="solved-content-text">{{ solver.solved }}</div>
+          <div
+            v-for="(solver, index) in leaderboard"
+            :key="index"
+            class="table-content-wrapper"
+          >
+            <div class="rank-content-text">
+              {{ solver.award == "" ? "" : index + 1 }}
             </div>
-          </div>
-          <div v-else class="table-content-wrapper">
-            <div class="rank-content-text"></div>
-            <div class="challenger-content-text"></div>
-            <div class="award-content-text"></div>
-            <div class="solved-content-text"></div>
+            <div class="challenger-content-text">
+              {{ formatAddress(solver.address) }}
+            </div>
+            <div class="award-content-text">
+              {{ formatAward(solver.award) }}
+            </div>
+            <div class="solved-content-text">{{ solver.solved }}</div>
           </div>
         </div>
       </div>
@@ -73,7 +71,7 @@ const overview = ref({
   verifiedChallenges: 0,
 });
 
-const leaderboard = ref([]);
+const leaderboard = ref([{ address: "", solved: "", award: "" }]);
 
 const fetchOverview = async () => {
   try {
@@ -90,13 +88,15 @@ const fetchOverview = async () => {
 const fetchLeaderboard = async () => {
   try {
     const result = await getTopSolvers(10);
-    leaderboard.value = result[0]
-      .map((address, index) => ({
-        address,
-        solved: result[1][index],
-        award: result[2][index].toString(),
-      }))
-      .sort((a, b) => b.award - a.award); // Sort by award in descending order
+    if (result[0].length != 0) {
+      leaderboard.value = result[0]
+        .map((address, index) => ({
+          address,
+          solved: result[1][index],
+          award: result[2][index].toString(),
+        }))
+        .sort((a, b) => b.award - a.award); // Sort by award in descending order
+    }
   } catch (error) {
     console.error("Error fetching leaderboard data:", error);
   }
@@ -104,6 +104,7 @@ const fetchLeaderboard = async () => {
 
 const formatAward = (award) => {
   // return award;
+  if (award == "") return "";
   return ethers.formatUnits(award.toString(), 18);
 };
 
