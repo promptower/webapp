@@ -103,7 +103,13 @@
       </div>
     </div>
   </div>
-  <ConfirmModal />
+
+  <ConfirmModal
+    v-if="confirmType === 0 || confirmType === 1"
+    :confirmType="confirmType"
+    :message="confirmMessage"
+    @closeConfirmModal="closeConfirmModal"
+  />
 </template>
 
 <script setup>
@@ -124,6 +130,9 @@ const modal = useWeb3Modal();
 const { walletInfo } = useWalletInfo();
 const { walletProvider } = useWeb3ModalProvider();
 const { address, chainId, isConnected } = useWeb3ModalAccount();
+
+const confirmType = ref(0);
+const confirmMessage = ref("");
 
 // Props
 const props = defineProps({
@@ -176,12 +185,25 @@ const submitSecret = async () => {
   );
 
   if (status) {
+    // TODO wait hash
+    confirmMessage.value = "You successfully solved the problem. ";
+    confirmType.value = 1;
   } else {
+    confirmMessage.value = "Wrong answer. Please try again.";
+    confirmType.value = 0;
   }
 };
 
 const closeModal = () => {
   emit("closeModal");
+};
+
+const closeConfirmModal = () => {
+  const preConfirmType = confirmType.value;
+
+  confirmType.value = "";
+  emit("closeConfirmModal");
+  if (preConfirmType === 1) emit("closeModal");
 };
 
 // Utility methods to format date and award
