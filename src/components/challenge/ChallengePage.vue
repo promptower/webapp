@@ -145,7 +145,7 @@
                 </div>
               </div>
             </div>
-            <div class="nft-description">{{ item.description }}</div>
+            <div class="nft-description">{{ formatDescription(item.description) }}</div>
             <div class="nft-date-wrapper">
               <div class="nft-date-text">Date</div>
               <div class="nft-date-content-wrapper">
@@ -350,6 +350,13 @@ const formatAddress = (address) => {
     return `Winner: ${address.slice(0, 6)}...${address.slice(-4)}`;
   }
   return address;
+};
+
+const formatDescription = (description) => {
+  if (description.length > 96) {
+    return `${description.slice(0, 96)}...`;
+  }
+  return description;
 };
 
 // Fetch data when component is mounted
