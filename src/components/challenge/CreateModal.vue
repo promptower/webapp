@@ -205,7 +205,9 @@ const submitMetadata = async () => {
     metadata.value.start = new Date(startDate.value).getTime() / 1000; // Convert startDate to timestamp
     metadata.value.end = new Date(endDate.value).getTime() / 1000; // Convert endDate to timestamp
     metadata.value.prompt = ethers.keccak256(ethers.toUtf8Bytes(prompt.value));
-    metadata.value.secret = ethers.keccak256(ethers.toUtf8Bytes(secret.value));
+    metadata.value.secret = ethers.keccak256(
+      ethers.keccak256(ethers.toUtf8Bytes(secret.value))
+    );
 
     const metadataAward = ethers.parseUnits(award.value.toString(), 18);
 
