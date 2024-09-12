@@ -21,7 +21,7 @@ const GAS_INFO = {
 
 async function attach() {
     if (!provider) {
-        provider = new ethers.JsonRpcProvider(config.rpc);
+        provider = new ethers.JsonRpcProvider(config.rpcUrl);
     }
 
     if (!contracts.Game) {

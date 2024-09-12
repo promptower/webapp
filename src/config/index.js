@@ -7,12 +7,13 @@ const projectDescription = "Capture the Prompt";
 const projectUrl = "https://promptower.github.io/webapp/";
 const logoUrl = "https://raw.githubusercontent.com/promptower/webapp/main/src/assets/logo.svg";
 
+//TODO
 const chainId = 1112;
 const chainName = "Wemix Testnet";
 const currency = "WEMIX";
 const explorerUrl = "https://testnet.wemixscan.com/";
 const rpcUrl = "https://api.test.wemix.com";
-const chainImageUrl = ""; //TODO
+const chainImageUrl = ""; 
 
 const config = {
     projectId,
@@ -27,7 +28,6 @@ const config = {
     rpcUrl,
     chainImageUrl,
     contracts,
-    rpc: "https://api.test.wemix.com" // TODO
 };
 
 export default config;

@@ -25,7 +25,7 @@ async function attach(walletProvider) {
             provider = new ethers.BrowserProvider(walletProvider);
         } catch (error) {
             console.log(error);
-            provider = new ethers.JsonRpcProvider(config.rpc);
+            provider = new ethers.JsonRpcProvider(config.rpcUrl);
         }
     }
 
