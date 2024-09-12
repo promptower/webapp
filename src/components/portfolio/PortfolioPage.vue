@@ -48,7 +48,9 @@
                   </div>
                 </div>
                 <img :src="nft.image" alt="nft" />
-                <div class="nft-title">{{ nft.title }}</div>
+                <div class="nft-title-wrapper">
+                  <div class="nft-title">{{ nft.name }}</div>
+                </div>
                 <div class="nft-date-wrapper">
                   <div class="nft-date-text">Date</div>
                   <div class="nft-date-content-wrapper">
@@ -108,13 +110,13 @@
               :key="index"
               class="detail-table-content"
             >
-              <div class="detail-content-text">{{ item.id }}</div>
+              <div class="detail-content-text">{{ index + 1 }}</div>
               <div class="detail-content-name-text">{{ item.name }}</div>
               <div class="detail-content-text">{{ item.status }}</div>
               <div class="detail-content-text">{{ item.type }}</div>
               <div class="detail-content-date-text">
                 {{ formatDate(item.startDate) }} ~
-                {{ formatDate(item.endDate) }}
+                {{ formatDate(item.endDate) }} (UST)
               </div>
               <div class="detail-content-text">
                 {{ formatAward(item.award) }}
@@ -152,7 +154,7 @@
             :key="index"
             class="solver-table-content"
           >
-            <div class="solver-content-text">{{ item.id }}</div>
+            <div class="solver-content-text">{{ index + 1 }}</div>
             <div class="solver-content-name-text">{{ item.name }}</div>
             <div class="solver-content-name-text">{{ item.type }}</div>
             <div class="detail-content-date-text">
@@ -398,6 +400,13 @@ onMounted(() => {
 
   border-radius: 10px;
   border: 2px solid #000;
+}
+
+.nft-title-wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-self: stretch;
 }
 
 .nft-title {
