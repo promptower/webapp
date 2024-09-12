@@ -76,7 +76,7 @@
       <div class="nfts">
         <!-- repeat -->
         <div
-          v-for="(item, index) in nftData"
+          v-for="(item, index) in paginatedNfts"
           :key="item.id"
           class="nft-wrapper"
           :class="{ 'is-verified-nft': item.status === 'Verified' }"
@@ -145,7 +145,9 @@
                 </div>
               </div>
             </div>
-            <div class="nft-description">{{ formatDescription(item.description) }}</div>
+            <div class="nft-description">
+              {{ formatDescription(item.description) }}
+            </div>
             <div class="nft-date-wrapper">
               <div class="nft-date-text">Date</div>
               <div class="nft-date-content-wrapper">
@@ -206,17 +208,27 @@
       </div>
       <div class="pagination">
         <div class="pagination-wrapper">
-          <img src="@/assets/pagination/left.svg" alt="left" />
-          <div class="number-wrapper">
-            <div class="number-text" :class="{ 'is-pagination-active': true }">
-              1
+          <img
+            src="@/assets/pagination/left.svg"
+            alt="left"
+            @click="updateCurrentPage(currentPageIndex - 1)"
+          />
+          <div v-for="(item, index) in endPage" class="number-wrapper">
+            <div
+              class="number-text"
+              :class="{
+                'is-pagination-active': index + 1 === currentPageIndex,
+              }"
+              @click="updateCurrentPage(index + 1)"
+            >
+              {{ index + 1 }}
             </div>
-            <div class="number-text">2</div>
-            <div class="number-text">3</div>
-            <div class="number-text">4</div>
-            <div class="number-text">5</div>
           </div>
-          <img src="@/assets/pagination/right.svg" alt="right" />
+          <img
+            src="@/assets/pagination/right.svg"
+            alt="right"
+            @click="updateCurrentPage(currentPageIndex + 1)"
+          />
         </div>
       </div>
     </div>
@@ -236,7 +248,7 @@ import CreateModal from "./CreateModal.vue";
 
 import { getGames } from "@/utils/gameView";
 
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { ethers } from "ethers";
 
 // Reactive state
@@ -248,6 +260,25 @@ const selectedNft = ref(null);
 
 // State for NFT data
 const nftData = ref([]);
+
+// State for pagination
+const currentPageIndex = ref(1);
+
+// Computed end page
+const paginationValue = 6;
+
+const endPage = computed(() => {
+  if (nftData.value.length == 0) return 1;
+  return Math.floor((nftData.value.length - 1) / paginationValue) + 1;
+});
+
+// Computed end page
+const paginatedNfts = computed(() => {
+  return nftData.value.slice(
+    (currentPageIndex.value - 1) * paginationValue,
+    currentPageIndex.value * paginationValue
+  );
+});
 
 // Methods for modals
 const openModal = (item) => {
@@ -267,6 +298,16 @@ const openCreateModal = () => {
 
 const closeCreateModal = () => {
   showCreateModal.value = false;
+};
+
+const updateCurrentPage = (index) => {
+  if (index > endPage.value) {
+    currentPageIndex.value = endPage.value;
+  } else if (index < 1) {
+    currentPageIndex.value = 1;
+  } else {
+    currentPageIndex.value = index;
+  }
 };
 
 const fetchNftData = async () => {
