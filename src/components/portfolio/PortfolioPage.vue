@@ -29,6 +29,7 @@
                 v-for="(nft, index) in makerPortfolio.nfts"
                 :key="index"
                 class="nft-wrapper"
+                :class="{ 'is-verified-nft': nft.status === 'Verified' }"
               >
                 <div class="nft-status-wrapper">
                   <div class="type-wrapper">
@@ -36,13 +37,50 @@
                   </div>
                   <div class="live-wrapper">
                     <svg
+                      v-if="nft.status !== 'Verified'"
                       xmlns="http://www.w3.org/2000/svg"
                       width="12"
                       height="12"
                       viewBox="0 0 12 12"
                       fill="none"
                     >
-                      <circle cx="6" cy="6.02026" r="5.5" fill="#53926D" />
+                      <circle
+                        cx="6"
+                        cy="6.02026"
+                        r="5.5"
+                        :fill="nft.status === 'Live' ? '#53926D' : '#CC0000'"
+                      />
+                    </svg>
+                    <svg
+                      v-if="nft.status === 'Verified'"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="19"
+                      height="19"
+                      viewBox="0 0 19 19"
+                      fill="none"
+                    >
+                      <circle
+                        cx="9.5"
+                        cy="9.5"
+                        r="8"
+                        fill="#4DC4CF"
+                        stroke="black"
+                        stroke-width="2"
+                      />
+                      <rect
+                        x="3.5"
+                        y="7.91431"
+                        width="2"
+                        height="8.48528"
+                        transform="rotate(-45 3.5 7.91431)"
+                        fill="black"
+                      />
+                      <rect
+                        width="2"
+                        height="8.48563"
+                        transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 15.5 7.91431)"
+                        fill="black"
+                      />
                     </svg>
                     <div class="live-text">{{ nft.status }}</div>
                   </div>
@@ -69,8 +107,22 @@
                   </div>
                 </div>
                 <div class="nft-award-wrapper">
-                  <div class="nft-award-text">Award</div>
-                  <div class="nft-award-content-text">
+                  <div
+                    class="nft-award-text"
+                    :class="{
+                      'is-verified-nft-text': nft.status === 'Verified',
+                      // 'is-solved-nft-text': nft.status === 'Solved',
+                    }"
+                  >
+                    Award
+                  </div>
+                  <div
+                    class="nft-award-text"
+                    :class="{
+                      'is-verified-nft-text': nft.status === 'Verified',
+                      'is-solved-nft-text': nft.status === 'Solved',
+                    }"
+                  >
                     {{ formatAward(nft.award) + " USDC" }}
                   </div>
                 </div>
@@ -228,6 +280,8 @@ const solverPortfolio = ref({
 });
 
 const parsePortfolioResult = (result) => {
+  const currentTime = Math.floor(Date.now() / 1000);
+
   return result.map((item) => ({
     id: item[0].toString(),
     tokenId: item[1],
@@ -241,9 +295,12 @@ const parsePortfolioResult = (result) => {
     endDate: Number(item[9]),
     award: item[10],
     status:
-      item[11] === "0x0000000000000000000000000000000000000000"
-        ? "Live"
-        : "End",
+      item[11].toLowerCase() === "0xffffffffffffffffffffffffffffffffffffffff" ||
+      (item[11] === ethers.ZeroAddress && currentTime > Number(item[9]))
+        ? "Verified"
+        : item[11] !== ethers.ZeroAddress
+        ? "Solved"
+        : "Live",
   }));
 };
 
@@ -364,6 +421,10 @@ onBeforeUnmount(() => {
   background: #f5f3f3;
 }
 
+.is-verified-nft {
+  background: #4dc4cf;
+}
+
 .nft-status-wrapper {
   display: flex;
   justify-content: space-between;
@@ -482,6 +543,14 @@ onBeforeUnmount(() => {
   font-style: normal;
   font-weight: 700;
   line-height: normal;
+}
+
+.is-verified-nft-text {
+  color: #000f;
+}
+
+.is-solved-nft-text {
+  text-decoration-line: line-through;
 }
 
 .nft-award-content-text {
