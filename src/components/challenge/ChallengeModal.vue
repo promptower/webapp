@@ -131,7 +131,7 @@ const { walletInfo } = useWalletInfo();
 const { walletProvider } = useWeb3ModalProvider();
 const { address, chainId, isConnected } = useWeb3ModalAccount();
 
-const confirmType = ref(0);
+const confirmType = ref(null);
 const confirmMessage = ref("");
 
 // Props
