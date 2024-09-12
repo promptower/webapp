@@ -141,9 +141,8 @@
           <div class="solver-table-top">
             <div class="solver-top-text">Id</div>
             <div class="solver-top-name-text">Name</div>
-            <div class="solver-top-text">Status</div>
-            <div class="solver-top-text">Type</div>
-            <div class="solver-top-date-text">Date</div>
+            <div class="solver-top-name-text">Type</div>
+            <div class="solver-top-date-text">Solved</div>
             <div class="solver-top-text">Award</div>
           </div>
           <!-- Solver Details -->
@@ -155,8 +154,7 @@
           >
             <div class="solver-content-text">{{ item.id }}</div>
             <div class="solver-content-name-text">{{ item.name }}</div>
-            <div class="solver-content-text">{{ item.status }}</div>
-            <div class="solver-content-text">{{ item.type }}</div>
+            <div class="solver-content-name-text">{{ item.type }}</div>
             <div class="detail-content-date-text">
               {{ formatDate(item.startDate) }} ~ {{ formatDate(item.endDate) }}
             </div>
