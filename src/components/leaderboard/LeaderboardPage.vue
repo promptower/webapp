@@ -36,19 +36,23 @@
             <div class="solved-text">Solved</div>
           </div>
           <!-- Leaderboard items -->
-          <div
-            v-for="(solver, index) in leaderboard"
-            :key="index"
-            class="table-content-wrapper"
-          >
-            <div class="rank-content-text">{{ index + 1 }}</div>
-            <div class="challenger-content-text">
-              {{ formatAddress(solver.address) }}
+          <div v-if="leaderboard.length > 0" class="table-content-wrapper">
+            <div v-for="(solver, index) in leaderboard" :key="index">
+              <div class="rank-content-text">{{ index + 1 }}</div>
+              <div class="challenger-content-text">
+                {{ formatAddress(solver.address) }}
+              </div>
+              <div class="award-content-text">
+                {{ formatAward(solver.award) }}
+              </div>
+              <div class="solved-content-text">{{ solver.solved }}</div>
             </div>
-            <div class="award-content-text">
-              {{ formatAward(solver.award) }}
-            </div>
-            <div class="solved-content-text">{{ solver.solved }}</div>
+          </div>
+          <div v-else class="table-content-wrapper">
+            <div class="rank-content-text"></div>
+            <div class="challenger-content-text"></div>
+            <div class="award-content-text"></div>
+            <div class="solved-content-text"></div>
           </div>
         </div>
       </div>
