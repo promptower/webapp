@@ -137,6 +137,9 @@ const endDate = ref("");
 
 const typeIndex = ref(0);
 
+const { walletProvider } = useWeb3ModalProvider();
+const { address, chainId, isConnected } = useWeb3ModalAccount();
+
 // Methods
 const closeCreateModal = () => {
   emit("closeCreateModal");
@@ -146,44 +149,57 @@ const changeTypeIndex = (index) => {
   typeIndex.value = index;
 };
 
+const validateConditions = () => {
+  // metadata
+  if (award.value == "") return false;
+  if (prompt.value == "") return false;
+  if (secret.value == "") return false;
+  if (startDate.value == "") return false;
+  if (endDate.value == "") return false;
+
+  // metadata
+  if (!isConnected.value) return false;
+
+  return true;
+};
+
 const submitMetadata = async () => {
-  // const currentTime = Math.floor(Date.now() / 1000); // Current timestamp in seconds
+  if (validateConditions()) {
+    // const currentTime = Math.floor(Date.now() / 1000); // Current timestamp in seconds
 
-  metadata.value.start = new Date(startDate.value).getTime() / 1000; // Convert startDate to timestamp
-  metadata.value.end = new Date(endDate.value).getTime() / 1000; // Convert endDate to timestamp
-  metadata.value.prompt = ethers.keccak256(ethers.toUtf8Bytes(prompt.value));
-  metadata.value.secret = ethers.keccak256(ethers.toUtf8Bytes(secret.value));
+    metadata.value.start = new Date(startDate.value).getTime() / 1000; // Convert startDate to timestamp
+    metadata.value.end = new Date(endDate.value).getTime() / 1000; // Convert endDate to timestamp
+    metadata.value.prompt = ethers.keccak256(ethers.toUtf8Bytes(prompt.value));
+    metadata.value.secret = ethers.keccak256(ethers.toUtf8Bytes(secret.value));
 
-  const metadataAward = ethers.parseUnits(award.value, 18);
+    const metadataAward = ethers.parseUnits(award.value.toString(), 18);
 
-  // Output metadata object to console or use it in the application as needed
-  // console.log("Metadata object:", metadata.value);
-  // console.log("award:", metadataAward);
-  /*
-{
-    "name": "Project Nexus",
-    "description": "A collaborative AI for streamlining communication between distributed teams.",
-    "gameType": "secret",
-    "prompt": "0x0ab12c567b7ad80c41147c3c8ea8f1531453e7c653da51e39c8b6c43964af8a5",
-    "secret": "0x4eedc8faa297263c59be196499ae5e93ae9f6bada51cd9896af04487ddb2d3a5",
-    "start": 1725840000,
-    "end": 1725926400,
-    "winner": "0x0000000000000000000000000000000000000000"
-}
-"award": "11000000000000000000",
-  */
+    // Output metadata object to console or use it in the application as needed
+    // console.log("Metadata object:", metadata.value);
+    // console.log("award:", metadataAward);
+    /*
+  {
+      "name": "Project Nexus",
+      "description": "A collaborative AI for streamlining communication between distributed teams.",
+      "gameType": "secret",
+      "prompt": "0x0ab12c567b7ad80c41147c3c8ea8f1531453e7c653da51e39c8b6c43964af8a5",
+      "secret": "0x4eedc8faa297263c59be196499ae5e93ae9f6bada51cd9896af04487ddb2d3a5",
+      "start": 1725840000,
+      "end": 1725926400,
+      "winner": "0x0000000000000000000000000000000000000000"
+  }
+  "award": "11000000000000000000",
+    */
 
-  const { walletProvider } = useWeb3ModalProvider();
-  const { address, chainId, isConnected } = useWeb3ModalAccount();
+    await approve(walletProvider.value);
 
-  await approve(walletProvider.value);
-
-  await mint(
-    walletProvider.value,
-    address.value,
-    metadata.value,
-    metadataAward
-  );
+    await mint(
+      walletProvider.value,
+      address.value,
+      metadata.value,
+      metadataAward
+    );
+  }
 };
 </script>
 
