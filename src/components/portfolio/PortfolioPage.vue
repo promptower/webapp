@@ -102,32 +102,34 @@
               <div class="detail-title-text">Award</div>
             </div>
             <!-- Maker Details -->
-            <div v-if="makerPortfolio.nfts.length > 0">
-              <div
-                v-for="(item, index) in makerPortfolio.details"
-                :key="index"
-                class="detail-table-content"
-              >
-                <div class="detail-content-text">{{ item.id }}</div>
-                <div class="detail-content-name-text">{{ item.name }}</div>
-                <div class="detail-content-text">{{ item.status }}</div>
-                <div class="detail-content-text">{{ item.type }}</div>
-                <div class="detail-content-date-text">
-                  {{ formatDate(item.startDate) }} ~
-                  {{ formatDate(item.endDate) }}
-                </div>
-                <div class="detail-content-text">
-                  {{ formatAward(item.award) }}
-                </div>
+            <div
+              v-if="makerPortfolio.details.length != 0"
+              v-for="(item, index) in makerPortfolio.details"
+              :key="index"
+              class="detail-table-content"
+            >
+              <div class="detail-content-text">{{ item.id }}</div>
+              <div class="detail-content-name-text">{{ item.name }}</div>
+              <div class="detail-content-text">{{ item.status }}</div>
+              <div class="detail-content-text">{{ item.type }}</div>
+              <div class="detail-content-date-text">
+                {{ formatDate(item.startDate) }} ~
+                {{ formatDate(item.endDate) }}
+              </div>
+              <div class="detail-content-text">
+                {{ formatAward(item.award) }}
               </div>
             </div>
-            <div v-else class="detail-table-content">
-              <div class="detail-content-text"></div>
-              <div class="detail-content-name-text"></div>
-              <div class="detail-content-text"></div>
-              <div class="detail-content-text"></div>
-              <div class="detail-content-date-text"></div>
-              <div class="detail-content-text"></div>
+            <div
+              v-if="makerPortfolio.details.length == 0"
+              class="detail-table-content"
+            >
+              <div class="detail-content-text">{{ "" }}</div>
+              <div class="detail-content-name-text">{{ "" }}</div>
+              <div class="detail-content-text">{{ "" }}</div>
+              <div class="detail-content-text">{{ "" }}</div>
+              <div class="detail-content-date-text">{{ "" }}</div>
+              <div class="detail-content-text">{{ "" }}</div>
             </div>
           </div>
         </div>
@@ -145,32 +147,31 @@
             <div class="solver-top-text">Award</div>
           </div>
           <!-- Solver Details -->
-          <div v-if="solverPortfolio.details.length > 0">
-            <div
-              v-for="(item, index) in solverPortfolio.details"
-              :key="index"
-              class="solver-table-content"
-            >
-              <div class="solver-content-text">{{ item.id }}</div>
-              <div class="solver-content-name-text">{{ item.name }}</div>
-              <div class="solver-content-text">{{ item.status }}</div>
-              <div class="solver-content-text">{{ item.type }}</div>
-              <div class="solver-content-date-text">
-                {{ formatDate(item.startDate) }} ~
-                {{ formatDate(item.endDate) }}
-              </div>
-              <div class="solver-content-text">
-                {{ formatAward(item.award) }}
-              </div>
+          <div
+            v-if="solverPortfolio.details.length != 0"
+            v-for="(item, index) in solverPortfolio.details"
+            :key="index"
+            class="solver-table-content"
+          >
+            <div class="solver-content-text">{{ item.id }}</div>
+            <div class="solver-content-name-text">{{ item.name }}</div>
+            <div class="solver-content-text">{{ item.status }}</div>
+            <div class="solver-content-text">{{ item.type }}</div>
+            <div class="detail-content-date-text">
+              {{ formatDate(item.startDate) }} ~ {{ formatDate(item.endDate) }}
             </div>
+            <div class="detail-content-text">{{ formatAward(item.award) }}</div>
           </div>
-          <div v-else class="solver-table-content">
-            <div class="solver-content-text"></div>
-            <div class="solver-content-name-text"></div>
-            <div class="solver-content-text"></div>
-            <div class="solver-content-text"></div>
-            <div class="solver-content-date-text"></div>
-            <div class="solver-content-text"></div>
+          <div
+            v-if="solverPortfolio.details.length == 0"
+            class="solver-table-content"
+          >
+            <div class="solver-content-text">{{ "" }}</div>
+            <div class="solver-content-name-text">{{ "" }}</div>
+            <div class="solver-content-text">{{ "" }}</div>
+            <div class="solver-content-text">{{ "" }}</div>
+            <div class="detail-content-date-text">{{ "" }}</div>
+            <div class="detail-content-text">{{ "" }}</div>
           </div>
         </div>
       </div>
@@ -305,6 +306,7 @@ onMounted(() => {
 
 .maker-wrapper {
   display: flex;
+  width: 1032px;
   flex-direction: column;
   align-items: flex-start;
   gap: 22px;
