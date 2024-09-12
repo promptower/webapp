@@ -10,7 +10,7 @@
               <div class="content-text">{{ overview.totalChallenges }}</div>
             </div>
             <div class="title-wrapper">
-              <div class="title-text">Ongoing Challenges</div>
+              <div class="title-text">Live Challenges</div>
               <div class="content-text">{{ overview.ongoingChallenges }}</div>
             </div>
             <div class="title-wrapper">
