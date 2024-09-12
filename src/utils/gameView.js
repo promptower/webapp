@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import config from "@/config";
 
 import GameAbis from "@/abis/Game.json";
+import GameFrontendAbis from "@/abis/GameFrontend.json";
 import UsdcAbis from "@/abis/USDC.json";
 import BadgeAbis from "@/abis/Verified.json";
 
@@ -10,6 +11,7 @@ let provider = undefined;
 // let signer = undefined;
 let contracts = {
     Game: undefined,
+    GameFrontend: undefined,
     Award: undefined,
     Badge: undefined,
 };
@@ -26,6 +28,9 @@ async function attach() {
 
     if (!contracts.Game) {
         contracts.Game = new ethers.Contract(config.contracts.Game, GameAbis.abi, provider);
+    }
+    if (!contracts.GameFrontend) {
+        contracts.GameFrontend = new ethers.Contract(config.contracts.GameFrontend, GameFrontendAbis.abi, provider);
     }
     if (!contracts.Award) {
         contracts.Award = new ethers.Contract(config.contracts.Award, UsdcAbis.abi, provider);
@@ -62,7 +67,7 @@ async function getGames(
 ) {
     await attach();
 
-    let response = await contracts.Game.getNfts(startNumber, endNumber);
+    let response = await contracts.GameFrontend.getNfts(startNumber, endNumber);
     return response;
 }
 
@@ -70,7 +75,7 @@ async function getStatus(
 ) {
     await attach();
 
-    let response = await contracts.Game.gameStatus();
+    let response = await contracts.GameFrontend.gameStatus();
     return response;
 }
 
@@ -79,7 +84,7 @@ async function getTopSolvers(
 ) {
     await attach();
 
-    let response = await contracts.Game.getTopSolvers(topk);
+    let response = await contracts.GameFrontend.getTopSolvers(topk);
     return response;
 }
 
@@ -88,7 +93,7 @@ async function getPortfolioMaker(
 ) {
     await attach();
 
-    let response = await contracts.Game.getPortfolioMaker(user);
+    let response = await contracts.GameFrontend.getPortfolioMaker(user);
     return response;
 }
 
@@ -97,7 +102,7 @@ async function getPortfolioSolver(
 ) {
     await attach();
 
-    let response = await contracts.Game.getPortfolioSolver(user);
+    let response = await contracts.GameFrontend.getPortfolioSolver(user);
     return response;
 }
 

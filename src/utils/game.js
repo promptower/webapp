@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import config from "@/config";
 
 import GameAbis from "@/abis/Game.json";
+import GameFrontendAbis from "@/abis/GameFrontend.json";
 import UsdcAbis from "@/abis/USDC.json";
 import BadgeAbis from "@/abis/Verified.json";
 
@@ -10,6 +11,7 @@ let provider = undefined;
 let signer = undefined;
 let contracts = {
     Game: undefined,
+    GameFrontend: undefined,
     Award: undefined,
     Badge: undefined,
 };
@@ -34,6 +36,9 @@ async function attach(walletProvider) {
 
     if (!contracts.Game) {
         contracts.Game = new ethers.Contract(config.contracts.Game, GameAbis.abi, provider);
+    }
+    if (!contracts.GameFrontend) {
+        contracts.GameFrontend = new ethers.Contract(config.contracts.GameFrontend, GameFrontendAbis.abi, provider);
     }
     if (!contracts.Award) {
         contracts.Award = new ethers.Contract(config.contracts.Award, UsdcAbis.abi, provider);
