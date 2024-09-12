@@ -79,6 +79,7 @@
           v-for="(item, index) in nftData"
           :key="item.id"
           class="nft-wrapper"
+          :class="{ 'is-verified-nft': item.status === 'Verified' }"
         >
           <div class="nft-content-wrapper">
             <div class="nft-content-top-wrapper">
@@ -89,6 +90,7 @@
               <div class="nft-content-top-title-wrapper">
                 <div class="live-wrapper">
                   <svg
+                    v-if="item.status !== 'Verified'"
                     xmlns="http://www.w3.org/2000/svg"
                     width="12"
                     height="12"
@@ -102,9 +104,38 @@
                       :fill="item.status === 'Live' ? '#53926D' : '#CC0000'"
                     />
                   </svg>
-                  <div class="live-text">
-                    {{ item.status === "Live" ? "Live" : "End" }}
-                  </div>
+                  <svg
+                    v-if="item.status === 'Verified'"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="19"
+                    height="19"
+                    viewBox="0 0 19 19"
+                    fill="none"
+                  >
+                    <circle
+                      cx="9.5"
+                      cy="9.5"
+                      r="8"
+                      fill="#4DC4CF"
+                      stroke="black"
+                      stroke-width="2"
+                    />
+                    <rect
+                      x="3.5"
+                      y="7.91431"
+                      width="2"
+                      height="8.48528"
+                      transform="rotate(-45 3.5 7.91431)"
+                      fill="black"
+                    />
+                    <rect
+                      width="2"
+                      height="8.48563"
+                      transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 15.5 7.91431)"
+                      fill="black"
+                    />
+                  </svg>
+                  <div class="live-text">{{ item.status }}</div>
                 </div>
                 <div class="live-title-wrapper">
                   <div class="live-title-text">{{ item.name }}</div>
@@ -133,15 +164,23 @@
               </div>
             </div>
             <div class="nft-award-wrapper">
-              <div class="nft-award-text">Award</div>
-              <div class="nft-award-content-text">
+              <div
+                class="nft-award-text"
+                :class="{ 'is-verified-nft-text': item.status === 'Verified' }"
+              >
+                Award
+              </div>
+              <div
+                class="nft-award-content-text"
+                :class="{ 'is-verified-nft-text': item.status === 'Verified' }"
+              >
                 {{ formatAward(item.awards) }} USDC
               </div>
             </div>
           </div>
           <div
             class="nft-btn"
-            :class="{ disabled: item.status === 'Solved' }"
+            :class="{ 'is-live': item.status === 'Live' }"
             @click="item.status !== 'Solved' && openModal(item)"
           >
             <div class="nft-btn-text">
@@ -203,8 +242,10 @@ const nftData = ref([]);
 
 // Methods for modals
 const openModal = (item) => {
-  selectedNft.value = item;
-  showModal.value = true;
+  if (item.status === "Live") {
+    selectedNft.value = item;
+    showModal.value = true;
+  }
 };
 
 const closeModal = () => {
@@ -231,7 +272,8 @@ const fetchNftData = async () => {
       let status = "Live";
       if (
         winnerAddress.toLowerCase() ===
-        "0xffffffffffffffffffffffffffffffffffffffff"
+          "0xffffffffffffffffffffffffffffffffffffffff" ||
+        (winnerAddress === ethers.ZeroAddress && currentTime > Number(nft[9]))
       ) {
         status = "Verified";
       } else if (winnerAddress !== ethers.ZeroAddress) {
@@ -455,6 +497,10 @@ onMounted(() => {
   box-sizing: border-box;
 }
 
+.is-verified-nft {
+  background: #4dc4cf;
+}
+
 .nft-content-wrapper {
   display: flex;
   flex-direction: column;
@@ -652,6 +698,10 @@ onMounted(() => {
   line-height: normal;
 }
 
+.is-verified-nft-text {
+  color: #000f;
+}
+
 .nft-btn {
   display: flex;
   padding: 10px 30px;
@@ -661,6 +711,10 @@ onMounted(() => {
 
   border-radius: 20px;
   border: 2px solid #000;
+  background: #cacaca;
+}
+
+.is-live {
   background: #53926d;
 
   cursor: pointer;
