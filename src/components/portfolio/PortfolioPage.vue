@@ -49,19 +49,25 @@
                 <div class="nft-date-wrapper">
                   <div class="nft-date-text">Date</div>
                   <div class="nft-date-content-wrapper">
-                    <div class="nft-date-content-text">{{ nft.startDate }}</div>
-                    <div class="nft-date-content-text">{{ nft.endDate }}</div>
+                    <div class="nft-date-content-text">
+                      {{ formatDate(nft.startDate) }}
+                    </div>
+                    <div class="nft-date-content-text">
+                      ~ {{ formatDate(nft.endDate) }}
+                    </div>
                   </div>
                 </div>
                 <div class="nft-duration-wrapper">
-                  <div class="nft-duration-text">Duration</div>
+                  <div class="nft-duration-text">Remaining</div>
                   <div class="nft-duration-content-text">
-                    {{ nft.duration }}
+                    {{ calculateDuration(nft.startDate, nft.endDate) }} days
                   </div>
                 </div>
                 <div class="nft-award-wrapper">
                   <div class="nft-award-text">Award</div>
-                  <div class="nft-award-content-text">{{ nft.award }}</div>
+                  <div class="nft-award-content-text">
+                    {{ formatAward(nft.award) + " USDC" }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -102,8 +108,13 @@
               <div class="detail-content-name-text">{{ item.name }}</div>
               <div class="detail-content-text">{{ item.status }}</div>
               <div class="detail-content-text">{{ item.type }}</div>
-              <div class="detail-content-date-text">{{ item.dateRange }}</div>
-              <div class="detail-content-text">{{ item.award }}</div>
+              <div class="detail-content-date-text">
+                {{ formatDate(item.startDate) }} ~
+                {{ formatDate(item.endDate) }}
+              </div>
+              <div class="detail-content-text">
+                {{ formatAward(item.award) }}
+              </div>
             </div>
           </div>
         </div>
@@ -130,8 +141,11 @@
             <div class="solver-content-name-text">{{ item.name }}</div>
             <div class="solver-content-text">{{ item.status }}</div>
             <div class="solver-content-text">{{ item.type }}</div>
-            <div class="solver-content-date-text">{{ item.dateRange }}</div>
-            <div class="solver-content-text">{{ item.award }}</div>
+            <div class="solver-content-date-text">
+              {{ formatDate(item.startDate) }} ~
+              {{ formatDate(item.endDate) }}
+            </div>
+            <div class="solver-content-text">{{ formatAward(item.award) }}</div>
           </div>
         </div>
       </div>
@@ -145,15 +159,26 @@ import { getPortfolioMaker, getPortfolioSolver } from "@/utils/gameView";
 import { ref, onMounted } from "vue";
 import { ethers } from "ethers";
 
-// Helper function to convert timestamps and BigInt values
+// Utility methods to format date and award
 const formatDate = (timestamp) => {
-  const date = new Date(timestamp * 1000);
-  return date.toLocaleString("en-US", {
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const date = new Date(timestamp * 1000); // Convert from seconds to milliseconds
+
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const hours = date.getUTCHours();
+  const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+
+  const period = hours >= 12 ? "PM" : "AM";
+  const formattedHour = hours % 12 || 12;
+
+  return `${month}.${day} ${formattedHour}:${minutes} ${period}`;
+  // return `${month}.${day} ${formattedHour}:${minutes} ${period} (UTC)`;
+  // return date.toLocaleString("en-US", {
+  //   month: "2-digit",
+  //   day: "2-digit",
+  //   hour: "2-digit",
+  //   minute: "2-digit",
+  // });
 };
 
 const calculateDuration = (startDate, endDate) => {
@@ -183,12 +208,16 @@ const parsePortfolioResult = (result) => {
     name: item[1],
     description: item[2],
     type: item[3],
-    image: item[4],
-    startDate: formatDate(Number(item[5])),
-    endDate: formatDate(Number(item[6])),
-    award: formatAward(item[7]) + " USDC",
+    promptHash: item[4],
+    secretHash: item[5],
+    image: item[6],
+    startDate: Number(item[7]),
+    endDate: Number(item[8]),
+    award: item[9],
     status:
-      item[8] === "0x0000000000000000000000000000000000000000" ? "Live" : "End",
+      item[10] === "0x0000000000000000000000000000000000000000"
+        ? "Live"
+        : "End",
   }));
 };
 

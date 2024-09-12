@@ -55,7 +55,7 @@
             </div>
             <!-- Bind dynamic duration -->
             <div class="details-title-wrapper">
-              <div class="details-title-text">Duration</div>
+              <div class="details-title-text">Remaining</div>
               <div class="details-content-text">
                 {{ calculateDuration(nft.startDate, nft.endDate) }} days
               </div>

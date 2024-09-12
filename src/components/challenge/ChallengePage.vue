@@ -127,7 +127,7 @@
               </div>
             </div>
             <div class="nft-duration-wrapper">
-              <div class="nft-duration-text">Duration</div>
+              <div class="nft-duration-text">Remaining</div>
               <div class="nft-duration-content-text">
                 {{ calculateDuration(item.startDate, item.endDate) }} days
               </div>
