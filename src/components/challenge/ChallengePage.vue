@@ -5,65 +5,79 @@
       <div class="challenge-live-filter">
         <div
           class="challenge-live-filter-btn"
-          :class="{ 'is-live-active': true }"
+          :class="{ 'is-live-active': liveType === 0 }"
+          @click="updateLiveType(0)"
         >
           All
         </div>
         <div
           class="challenge-live-filter-btn"
-          :class="{ 'is-live-active': false }"
+          :class="{ 'is-live-active': liveType === 1 }"
+          @click="updateLiveType(1)"
         >
           Live
         </div>
         <div
           class="challenge-live-filter-btn"
-          :class="{ 'is-live-active': false }"
+          :class="{ 'is-live-active': liveType === 2 }"
+          @click="updateLiveType(2)"
         >
-          End
+          Solved
+        </div>
+        <div
+          class="challenge-live-filter-btn"
+          :class="{ 'is-live-active': liveType === 3 }"
+          @click="updateLiveType(3)"
+        >
+          Verified
         </div>
       </div>
       <div class="challenge-type-filter-wrapper">
         <div class="challenge-type-filter">
           <div
             class="challenge-type-filter-btn"
-            :class="{ 'is-type-active': true }"
+            :class="{ 'is-type-active': secretType === 0 }"
+            @click="updateSecretType(0)"
           >
             <div
               class="challenge-type-filter-btn-text"
-              :class="{ 'is-type-text-active': true }"
+              :class="{ 'is-type-text-active': secretType === 0 }"
             >
               All Type
             </div>
           </div>
           <div
             class="challenge-type-filter-btn"
-            :class="{ 'is-type-active': false }"
+            :class="{ 'is-type-active': secretType === 1 }"
+            @click="updateSecretType(1)"
           >
             <div
               class="challenge-type-filter-btn-text"
-              :class="{ 'is-type-text-active': false }"
+              :class="{ 'is-type-text-active': secretType === 1 }"
             >
               Secret
             </div>
           </div>
           <div
             class="challenge-type-filter-btn"
-            :class="{ 'is-type-active': false }"
+            :class="{ 'is-type-active': secretType === 2 }"
+            @click="updateSecretType(2)"
           >
             <div
               class="challenge-type-filter-btn-text"
-              :class="{ 'is-type-text-active': false }"
+              :class="{ 'is-type-text-active': secretType === 2 }"
             >
               Slang
             </div>
           </div>
           <div
             class="challenge-type-filter-btn"
-            :class="{ 'is-type-active': false }"
+            :class="{ 'is-type-active': secretType === 3 }"
+            @click="updateSecretType(3)"
           >
             <div
               class="challenge-type-filter-btn-text"
-              :class="{ 'is-type-text-active': false }"
+              :class="{ 'is-type-text-active': secretType === 3 }"
             >
               Mismatch
             </div>
@@ -261,6 +275,10 @@ const selectedNft = ref(null);
 // State for NFT data
 const nftData = ref([]);
 
+// State for filter
+const liveType = ref(0); // 0: all, 1: live, 2: solved, 3: verified
+const secretType = ref(0); // 0: all, 1: secret, 2: slang, 3: mismatch
+
 // State for pagination
 const currentPageIndex = ref(1);
 
@@ -268,13 +286,44 @@ const currentPageIndex = ref(1);
 const paginationValue = 6;
 
 const endPage = computed(() => {
-  if (nftData.value.length == 0) return 1;
-  return Math.floor((nftData.value.length - 1) / paginationValue) + 1;
+  if (filteredNfts.value.length == 0) return 1;
+  return Math.floor((filteredNfts.value.length - 1) / paginationValue) + 1;
+});
+
+// Computed live filter
+const filteredNfts = computed(() => {
+  if (nftData.value.length == 0) {
+    return [];
+  }
+
+  let filteredNftsArr = nftData.value;
+  if (liveType.value === 1) {
+    filteredNftsArr = nftData.value.filter((item) => item.status === "Live");
+  } else if (liveType.value === 2) {
+    filteredNftsArr = nftData.value.filter((item) => item.status === "Solved");
+  } else if (liveType.value === 3) {
+    filteredNftsArr = nftData.value.filter(
+      (item) => item.status === "Verified"
+    );
+  }
+
+  let newFilteredNftsArr = filteredNftsArr;
+  if (secretType.value === 1) {
+    newFilteredNftsArr = filteredNftsArr.filter(
+      (item) => item.gameType === "secret"
+    );
+  } else if (secretType.value === 2) {
+    newFilteredNftsArr = []; // TODO
+  } else if (secretType.value === 3) {
+    newFilteredNftsArr = []; // TODO
+  }
+
+  return newFilteredNftsArr;
 });
 
 // Computed end page
 const paginatedNfts = computed(() => {
-  return nftData.value.slice(
+  return filteredNfts.value.slice(
     (currentPageIndex.value - 1) * paginationValue,
     currentPageIndex.value * paginationValue
   );
@@ -298,6 +347,20 @@ const openCreateModal = () => {
 
 const closeCreateModal = () => {
   showCreateModal.value = false;
+};
+
+const updateLiveType = (index) => {
+  liveType.value = index;
+
+  // reset
+  currentPageIndex.value = 1;
+};
+
+const updateSecretType = (index) => {
+  secretType.value = index;
+
+  // reset
+  currentPageIndex.value = 1;
 };
 
 const updateCurrentPage = (index) => {
@@ -486,13 +549,15 @@ onMounted(() => {
   gap: 10px;
 
   border-radius: 20px;
-  border: 1px solid #000;
+  box-shadow: 0 0 0 1px #000 inset;
   background: #fff;
+
+  cursor: pointer;
 }
 
 .is-type-active {
   border-radius: 20px;
-  border: 2px solid #000;
+  box-shadow: 0 0 0 2px #000 inset;
   background: #f5f3f3;
 }
 
