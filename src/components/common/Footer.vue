@@ -1,9 +1,10 @@
 <template>
   <div class="footer">
     <div class="footer-content-wrapper">
-      <div class="community-wrapper">
-        <img src="@/assets/community/github.svg" alt="github">
-      </div>
+      <a href="https://github.com/promptower" target="_blank">
+        <div class="community-wrapper">
+          <img src="@/assets/community/github.svg" alt="github" /></div
+      ></a>
       <div class="copyright">ⓒ CTP. All Rights Reserved.</div>
     </div>
   </div>
