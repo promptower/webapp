@@ -8,26 +8,26 @@ import {
     useDisconnect,
 } from "@web3modal/ethers/vue";
 
-// import config from "@/config";
+import config from "@/config";
 
 // 1. Get projectId from https://cloud.walletconnect.com
-const projectId = "d0ec522cc8ac196893d24355f948e04f"; //TODO
+const projectId = config.projectId;
 
 // 2. Set chains
 const mainnet = {
-    chainId: 1112,
-    name: "Wemix Testnet",
-    currency: "WEMIX",
-    explorerUrl: "https://testnet.wemixscan.com/",
-    rpcUrl: "https://api.test.wemix.com",
+    chainId: config.chainId,
+    name: config.chainName,
+    currency: config.currency,
+    explorerUrl: config.explorerUrl,
+    rpcUrl: config.rpcUrl,
 };
 
 // 3. Create your application's metadata object
 const metadata = {
-    name: "CTP",
-    description: "Capture the Prompt",
-    url: "https://promptower.github.io/webapp/",
-    icons: [""], //TODO 
+    name: config.projectName,
+    description: config.projectDescription,
+    url: config.projectUrl,
+    icons: [config.logoUrl]
 };
 
 // 4. Create Ethers config
@@ -62,7 +62,7 @@ if (!modal) {
         ],
 
         chainImages: {
-            [mainnet.chainId]: '', //TODO
+            [mainnet.chainId]: config.chainImageUrl,
         }
     });
 }
