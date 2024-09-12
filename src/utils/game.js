@@ -71,7 +71,8 @@ async function waitForTransaction(hash) {
 /* Functions */
 
 async function approve(
-    walletProvider
+    walletProvider,
+    amount
 ) {
     await attach(walletProvider);
 
@@ -81,7 +82,7 @@ async function approve(
     );
     console.log(allowance);
 
-    if (allowance == 0) {
+    if (allowance < amount) {
         try {
             let response = await contracts.Award.connect(signer).approve(
                 await contracts.Game.getAddress(), ethers.MaxUint256,

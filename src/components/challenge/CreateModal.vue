@@ -178,7 +178,7 @@ const changeTypeIndex = (index) => {
 
 const validateConditions = () => {
   // metadata
-  if (award.value == "") return false;
+  if (award.value === "") return false;
   if (prompt.value == "") return false;
   if (secret.value == "") return false;
   if (startDate.value == "") return false;
@@ -233,7 +233,7 @@ const submitMetadata = async () => {
       secret.value
     );
 
-    await approve(walletProvider.value);
+    await approve(walletProvider.value, metadataAward);
 
     await mint(
       walletProvider.value,

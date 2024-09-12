@@ -439,16 +439,19 @@ onMounted(() => {
 
 .nft-wrapper {
   display: flex;
-  /*  */
-  width: 280px;
+  width: 324px;
+  height: 420px;
   padding: 24px 20px;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  /* gap: 20px; */
+  justify-content: space-between;
 
   border-radius: 20px;
   border: 2px solid #000;
   background: #f5f3f3;
+
+  box-sizing: border-box;
 }
 
 .nft-content-wrapper {
