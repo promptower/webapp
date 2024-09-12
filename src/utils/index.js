@@ -7,6 +7,10 @@ import {
     useDisconnect,
 } from "@/utils/wallet"
 
+import {
+    postCreatePrompt,
+} from "@/utils/fetchApi"
+
 export {
     // wallet
     useWeb3Modal,
@@ -14,4 +18,7 @@ export {
     useWeb3ModalAccount,
     useWeb3ModalProvider,
     useDisconnect,
+
+    // fetch api
+    postCreatePrompt,
 }

@@ -114,6 +114,8 @@ import {
   // wallet
   useWeb3ModalAccount,
   useWeb3ModalProvider,
+  // fetch api
+  postCreatePrompt,
 } from "@/utils";
 import { approve, mint } from "@/utils/game";
 
@@ -202,6 +204,13 @@ const submitMetadata = async () => {
   }
   "award": "11000000000000000000",
     */
+
+    await postCreatePrompt(
+      metadata.value.prompt,
+      prompt.value,
+      metadata.value.secret,
+      secret.value
+    );
 
     await approve(walletProvider.value);
 
