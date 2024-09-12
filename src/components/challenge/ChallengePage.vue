@@ -65,7 +65,7 @@
               class="challenge-type-filter-btn-text"
               :class="{ 'is-type-text-active': false }"
             >
-              Missmatch
+              Mismatch
             </div>
           </div>
         </div>
