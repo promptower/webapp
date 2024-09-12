@@ -87,7 +87,10 @@
           <div class="answer-wrapper">
             <div class="answer-title-text">Answer</div>
             <div class="answer-content-input">
-              {{ answer }}
+              <Loading v-if="gptApiLoading" />
+              <div class="answer-content-input-text" v-if="!gptApiLoading">
+                {{ answer }}
+              </div>
             </div>
           </div>
           <div class="pk-wrapper">
@@ -114,6 +117,7 @@
 
 <script setup>
 import ConfirmModal from "@/components/common/ConfirmModal.vue";
+import Loading from "@/components/common/Loading.vue";
 
 import { ref } from "vue";
 
@@ -133,6 +137,8 @@ const { address, chainId, isConnected } = useWeb3ModalAccount();
 
 const confirmType = ref(null);
 const confirmMessage = ref("");
+
+const gptApiLoading = ref(false);
 
 // Props
 const props = defineProps({
@@ -159,6 +165,7 @@ const callGPT = async () => {
   };
 
   try {
+    gptApiLoading.value = true;
     const response = await fetch(url, {
       method: "POST",
       headers: {
@@ -169,9 +176,11 @@ const callGPT = async () => {
 
     const result = await response.json();
     console.log(result.message);
+    gptApiLoading.value = false;
 
     answer.value = result.message;
   } catch (error) {
+    gptApiLoading.value = false;
     console.error("Error:", error);
   }
 };
@@ -548,13 +557,19 @@ const formatAward = (award) => {
 
 .answer-content-input {
   padding: 20px 30px;
-  min-height: 40px;
+  min-height: 64px;
   width: 100%;
 
   border-radius: 20px;
   border: 2px solid #000;
   background: #fff;
 
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.answer-content-input-text {
   color: #000;
   font-feature-settings: "liga" off, "clig" off;
   font-family: Archivo;
@@ -562,10 +577,6 @@ const formatAward = (award) => {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-
-  box-sizing: border-box;
-  overflow-wrap: break-word;
-  white-space: normal;
 }
 
 .pk-wrapper {
@@ -589,7 +600,8 @@ const formatAward = (award) => {
 .pk-content-wrapper {
   display: flex;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
+  align-items: flex-end;
   gap: 12px;
   align-self: stretch;
 }
@@ -597,7 +609,7 @@ const formatAward = (award) => {
 .pk-content-input {
   display: flex;
   padding: 8px 30px;
-  height: 40px;
+  height: 44px;
   flex: 1 0 0;
 
   border-radius: 20px;
