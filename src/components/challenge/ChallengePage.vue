@@ -254,7 +254,11 @@
     @closeModal="closeModal"
     @updateNftsData="fetchNftData"
   />
-  <CreateModal v-if="showCreateModal" @closeCreateModal="closeCreateModal" />
+  <CreateModal
+    v-if="showCreateModal"
+    @closeCreateModal="closeCreateModal"
+    @updateNftsData="fetchNftData"
+  />
 </template>
 
 <script setup>
