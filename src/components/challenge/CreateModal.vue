@@ -26,11 +26,10 @@
             </div>
             <div class="description-wrapper">
               <div class="description-text">Description</div>
-              <input
+              <textarea
                 class="description-input"
                 v-model="metadata.description"
                 placeholder="Description"
-                type="text"
               />
             </div>
             <div class="date-wrapper">
@@ -43,7 +42,7 @@
             <div class="award-wrapper">
               <div class="award-text">Award</div>
               <div class="award-input-wrapper">
-                <input class="award-input" v-model="award" type="text" />
+                <input class="award-input" v-model="award" type="number" />
                 <div class="usdc-wrapper">
                   <div class="usdc-text">USDC</div>
                 </div>
@@ -54,18 +53,35 @@
             <div class="type-wrapper">
               <div class="type-text">Type</div>
               <div class="type-content-secret-wrapper">
-                <div class="type-content-wrapper">
+                <div
+                  class="type-content-wrapper"
+                  :class="{ 'is-type-active': typeIndex == 0 }"
+                  @click="changeTypeIndex(0)"
+                >
                   <div class="type-content-text">Secret</div>
                 </div>
+                <div
+                  class="type-content-wrapper"
+                  :class="{ 'is-type-active': typeIndex == 1 }"
+                  @click="changeTypeIndex(1)"
+                >
+                  <div class="type-content-text">Slang</div>
+                </div>
+                <!-- <div
+                  class="type-content-wrapper"
+                  :class="{ 'is-type-active': typeIndex == 2 }"
+                  @click="changeTypeIndex(2)"
+                >
+                  <div class="type-content-text">Mismatch</div>
+                </div> -->
               </div>
             </div>
             <div class="description-wrapper">
               <div class="description-text">Prompt</div>
-              <input
+              <textarea
                 class="description-input"
                 v-model="prompt"
                 placeholder="Prompt"
-                type="text"
               />
             </div>
             <div class="name-wrapper">
@@ -119,9 +135,15 @@ const secret = ref("");
 const startDate = ref("");
 const endDate = ref("");
 
+const typeIndex = ref(0);
+
 // Methods
 const closeCreateModal = () => {
   emit("closeCreateModal");
+};
+
+const changeTypeIndex = (index) => {
+  typeIndex.value = index;
 };
 
 const submitMetadata = async () => {
@@ -156,7 +178,12 @@ const submitMetadata = async () => {
 
   await approve(walletProvider.value);
 
-  await mint(walletProvider.value, address.value, metadata.value, metadataAward);
+  await mint(
+    walletProvider.value,
+    address.value,
+    metadata.value,
+    metadataAward
+  );
 };
 </script>
 
@@ -308,7 +335,7 @@ const submitMetadata = async () => {
 .description-input {
   display: flex;
   height: 201px;
-  padding: 8px 30px;
+  padding: 20px 30px;
   align-items: center;
   gap: 10px;
   align-self: stretch;
@@ -430,6 +457,15 @@ const submitMetadata = async () => {
   box-sizing: border-box;
 }
 
+.award-input::-webkit-inner-spin-button,
+.award-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.award-input:focus {
+  outline: none;
+}
+
 .usdc-wrapper {
   display: flex;
   height: 40px;
@@ -504,9 +540,14 @@ const submitMetadata = async () => {
 
   border-radius: 20px;
   border: 2px solid #000;
-  background: #cacaca;
+  background: #fff;
 
+  cursor: pointer;
   box-sizing: border-box;
+}
+
+.is-type-active {
+  background: #cacaca;
 }
 
 .type-content-text {
@@ -545,6 +586,7 @@ const submitMetadata = async () => {
   border: 2px solid #000;
   background: #53926d;
 
+  cursor: pointer;
   box-sizing: border-box;
 }
 
