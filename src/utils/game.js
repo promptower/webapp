@@ -121,7 +121,9 @@ async function solve(
     await attach(walletProvider);
 
     console.log("tokenId", tokenId);
-    const tokenIdHex = ethers.zeroPadValue("0x" + (tokenId).toString(16), 32);
+    let tokenIdHexRaw = (tokenId).toString(16);
+    if (tokenIdHexRaw.length % 2 === 1) tokenIdHexRaw = `0${tokenIdHexRaw}`;
+    const tokenIdHex = ethers.zeroPadValue("0x" + tokenIdHexRaw, 32);
     console.log("tokenIdHex:", tokenIdHex);
 
     const secretHash = ethers.keccak256(ethers.toUtf8Bytes(`${secret}`));
