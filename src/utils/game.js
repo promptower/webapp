@@ -52,18 +52,17 @@ function sleep(ms) {
     return new Promise((r) => setTimeout(r, ms));
 }
 
-async function waitForTransaction(hash) {
-    const maxTime = 10; // TODO
+async function waitForTransaction(hash, time = 2000, maxTime = 10) {
     for (let i = 0; i < maxTime; i++) {
         const receipt = await provider.getTransactionReceipt(hash);
         if (receipt) {
-            if (receipt.status == 1) {
-                return true
+            if (receipt.status === 1) {
+                return true;
             } else {
                 return false;
             }
         }
-        await sleep(1000);
+        await sleep(time);
     }
     return false;
 }
@@ -132,8 +131,9 @@ async function solve(
 ) {
     await attach(walletProvider);
 
+    console.log("tokenId", tokenId);
     const tokenIdHex = ethers.zeroPadValue("0x" + (tokenId).toString(16), 32);
-    // console.log("tokenIdHex:", tokenIdHex);
+    console.log("tokenIdHex:", tokenIdHex);
 
     const secretHash = ethers.keccak256(ethers.toUtf8Bytes(`${secret}`));
     let sig;
@@ -176,6 +176,9 @@ async function solve(
         const result = await response.json();
         console.log(result.status);
         console.log(result.hash);
+        if (result.hash) {
+            await waitForTransaction(hash, 5000);
+        }
 
         return {
             status: result.status,

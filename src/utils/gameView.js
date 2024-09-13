@@ -40,26 +40,6 @@ async function attach() {
     }
 }
 
-function sleep(ms) {
-    return new Promise((r) => setTimeout(r, ms));
-}
-
-async function waitForTransaction(hash) {
-    const maxTime = 10; // TODO
-    for (let i = 0; i < maxTime; i++) {
-        const receipt = await provider.getTransactionReceipt(hash);
-        if (receipt) {
-            if (receipt.status == 1) {
-                return true
-            } else {
-                return false;
-            }
-        }
-        await sleep(1000);
-    }
-    return false;
-}
-
 /* View */
 
 async function getGames(
