@@ -97,8 +97,13 @@
             <div class="pk-title-text">Secret</div>
             <div class="pk-content-wrapper">
               <textarea class="pk-content-input" type="text" v-model="secret" />
-              <div class="submit-btn" @click="submitSecret()">
-                <div class="submit-text">Submit</div>
+              <div
+                class="submit-btn"
+                @click="submitSecret()"
+                :class="{ 'is-loading': isLoading }"
+              >
+                <LoadingSmall v-if="isLoading" />
+                <div class="submit-text" v-if="!isLoading">Submit</div>
               </div>
             </div>
           </div>
@@ -118,6 +123,7 @@
 <script setup>
 import ConfirmModal from "@/components/common/ConfirmModal.vue";
 import Loading from "@/components/common/Loading.vue";
+import LoadingSmall from "@/components/common/LoadingSmall.vue";
 
 import { ref } from "vue";
 
@@ -139,6 +145,7 @@ const confirmType = ref(null);
 const confirmMessage = ref("");
 
 const gptApiLoading = ref(false);
+const isLoading = ref(false);
 
 // Props
 const props = defineProps({
@@ -155,53 +162,65 @@ const answer = ref("");
 const secret = ref("");
 
 const callGPT = async () => {
-  const url =
-    "https://ib9fm6yjjg.execute-api.ap-northeast-2.amazonaws.com/ctp/ctp/qa";
-  const data = {
-    token_id: props.nft.id.toString(),
-    user: address.value,
-    prompt_hash: props.nft.promptHash,
-    question: question.value,
-  };
+  if (isConnected.value && !gptApiLoading.value) {
+    const url =
+      "https://ib9fm6yjjg.execute-api.ap-northeast-2.amazonaws.com/ctp/ctp/qa";
+    const data = {
+      token_id: props.nft.id.toString(),
+      user: address.value,
+      prompt_hash: props.nft.promptHash,
+      question: question.value,
+    };
 
-  try {
-    gptApiLoading.value = true;
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    try {
+      gptApiLoading.value = true;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-    const result = await response.json();
-    console.log(result.message);
-    gptApiLoading.value = false;
+      const result = await response.json();
+      console.log(result.message);
+      gptApiLoading.value = false;
 
-    answer.value = result.message;
-  } catch (error) {
-    gptApiLoading.value = false;
-    console.error("Error:", error);
+      answer.value = result.message;
+    } catch (error) {
+      gptApiLoading.value = false;
+      console.error("Error:", error);
+    }
   }
 };
 
 const submitSecret = async () => {
-  // TODO loading
-  const { status, hash } = await solve(
-    walletProvider.value,
-    props.nft.tokenId,
-    secret.value
-  );
+  if (isConnected.value && !isLoading.value) {
+    isLoading.value = true;
 
-  if (status) {
-    // TODO wait hash
-    confirmMessage.value = "You successfully solved the problem. ";
-    confirmType.value = 1;
+    try {
+      const { status, hash } = await solve(
+        walletProvider.value,
+        props.nft.tokenId,
+        secret.value
+      );
 
-    emit("updateNftsData");
-  } else {
-    confirmMessage.value = "Wrong answer. Please try again.";
-    confirmType.value = 0;
+      if (status) {
+        // TODO wait hash
+        confirmMessage.value = "You successfully solved the problem. ";
+        confirmType.value = 1;
+
+        emit("updateNftsData");
+      } else {
+        confirmMessage.value = "Transaction reverted. Please try again.";
+        confirmType.value = 0;
+      }
+    } catch (error) {
+      confirmMessage.value = "Wrong answer. Please try again.";
+      confirmType.value = 0;
+    } finally {
+      isLoading.value = false;
+    }
   }
 };
 
@@ -515,7 +534,8 @@ const formatAward = (award) => {
 
 .submit-btn {
   display: flex;
-  width: 120px;
+  width: 180px;
+  height: 44px;
   padding: 10px 30px;
   justify-content: center;
   align-items: center;
@@ -526,6 +546,8 @@ const formatAward = (award) => {
   background: #53926d;
 
   cursor: pointer;
+
+  box-sizing: border-box;
 }
 
 .submit-text {

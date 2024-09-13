@@ -116,8 +116,13 @@
             </div>
             <div class="submit-wrapper">
               <div class="empty-text"></div>
-              <div class="submit-btn-wrapper" @click="submitMetadata">
-                <div class="submit-btn-text">Submit</div>
+              <div
+                class="submit-btn-wrapper"
+                @click="submitMetadata"
+                :class="{ 'is-loading': isLoading }"
+              >
+                <LoadingSmall v-if="isLoading" />
+                <div class="submit-btn-text" v-if="!isLoading">Submit</div>
               </div>
             </div>
           </div>
@@ -136,6 +141,7 @@
 
 <script setup>
 import ConfirmModal from "@/components/common/ConfirmModal.vue";
+import LoadingSmall from "@/components/common/LoadingSmall.vue";
 
 import { ethers } from "ethers";
 import { ref } from "vue";
@@ -176,6 +182,8 @@ const typeIndex = ref(0);
 const confirmType = ref(null);
 const confirmMessage = ref("");
 
+const isLoading = ref(false);
+
 const { walletProvider } = useWeb3ModalProvider();
 const { address, chainId, isConnected } = useWeb3ModalAccount();
 
@@ -209,21 +217,21 @@ const validateConditions = () => {
     confirmMessage.value = "Please enter all the data.";
     return false;
   }
-  
+
   // metadata
   if (!isConnected.value) {
     confirmType.value = 0;
     confirmMessage.value = "Please connect your wallet.";
     return false;
   }
-  
+
   // condition1: prompt & secret
   if (!prompt.value.includes(secret.value)) {
     confirmType.value = 0;
     confirmMessage.value = "The prompt does not contain a secret.";
     return false;
   }
-  
+
   // condition2: start & end timstamp
   const startTimstamp = new Date(startDate.value).getTime() / 1000;
   const endTimstamp = new Date(endDate.value).getTime() / 1000;
@@ -237,55 +245,66 @@ const validateConditions = () => {
 };
 
 const submitMetadata = async () => {
-  if (validateConditions()) {
-    // const currentTime = Math.floor(Date.now() / 1000); // Current timestamp in seconds
+  if (validateConditions() || !isLoading.value) {
+    try {
+      isLoading.value = true;
 
-    metadata.value.start = new Date(startDate.value).getTime() / 1000; // Convert startDate to timestamp
-    metadata.value.end = new Date(endDate.value).getTime() / 1000; // Convert endDate to timestamp
-    metadata.value.prompt = ethers.keccak256(ethers.toUtf8Bytes(prompt.value));
-    metadata.value.secret = ethers.keccak256(
-      ethers.keccak256(ethers.toUtf8Bytes(secret.value))
-    );
+      // const currentTime = Math.floor(Date.now() / 1000); // Current timestamp in seconds
 
-    const metadataAward = ethers.parseUnits(award.value.toString(), 18);
+      metadata.value.start = new Date(startDate.value).getTime() / 1000; // Convert startDate to timestamp
+      metadata.value.end = new Date(endDate.value).getTime() / 1000; // Convert endDate to timestamp
+      metadata.value.prompt = ethers.keccak256(
+        ethers.toUtf8Bytes(prompt.value)
+      );
+      metadata.value.secret = ethers.keccak256(
+        ethers.keccak256(ethers.toUtf8Bytes(secret.value))
+      );
 
-    // Output metadata object to console or use it in the application as needed
-    // console.log("Metadata object:", metadata.value);
-    // console.log("award:", metadataAward);
-    /*
-  {
-      "name": "Project Nexus",
-      "description": "A collaborative AI for streamlining communication between distributed teams.",
-      "gameType": "secret",
-      "prompt": "0x0ab12c567b7ad80c41147c3c8ea8f1531453e7c653da51e39c8b6c43964af8a5",
-      "secret": "0x4eedc8faa297263c59be196499ae5e93ae9f6bada51cd9896af04487ddb2d3a5",
-      "start": 1725840000,
-      "end": 1725926400,
-      "winner": "0x0000000000000000000000000000000000000000"
-  }
-  "award": "11000000000000000000",
-    */
+      const metadataAward = ethers.parseUnits(award.value.toString(), 18);
 
-    await postCreatePrompt(
-      metadata.value.prompt,
-      prompt.value,
-      metadata.value.secret,
-      secret.value
-    );
+      // Output metadata object to console or use it in the application as needed
+      // console.log("Metadata object:", metadata.value);
+      // console.log("award:", metadataAward);
+      /*
+    {
+        "name": "Project Nexus",
+        "description": "A collaborative AI for streamlining communication between distributed teams.",
+        "gameType": "secret",
+        "prompt": "0x0ab12c567b7ad80c41147c3c8ea8f1531453e7c653da51e39c8b6c43964af8a5",
+        "secret": "0x4eedc8faa297263c59be196499ae5e93ae9f6bada51cd9896af04487ddb2d3a5",
+        "start": 1725840000,
+        "end": 1725926400,
+        "winner": "0x0000000000000000000000000000000000000000"
+    }
+    "award": "11000000000000000000",
+      */
 
-    await approve(walletProvider.value, metadataAward);
+      await postCreatePrompt(
+        metadata.value.prompt,
+        prompt.value,
+        metadata.value.secret,
+        secret.value
+      );
 
-    await mint(
-      walletProvider.value,
-      address.value,
-      metadata.value,
-      metadataAward
-    );
+      await approve(walletProvider.value, metadataAward);
 
-    confirmMessage.value = "You successfully registered the project.";
-    confirmType.value = 1;
+      await mint(
+        walletProvider.value,
+        address.value,
+        metadata.value,
+        metadataAward
+      );
 
-    emit("updateNftsData");
+      confirmMessage.value = "You successfully registered the project.";
+      confirmType.value = 1;
+
+      emit("updateNftsData");
+    } catch (error) {
+      confirmMessage.value = "Transaction reverted. Please try again.";
+      confirmType.value = 0;
+    } finally {
+      isLoading.value = false;
+    }
   }
 };
 </script>
@@ -700,6 +719,12 @@ const submitMetadata = async () => {
 
   cursor: pointer;
   box-sizing: border-box;
+}
+
+.is-loading {
+  background: #b0ccbc;
+
+  cursor: not-allowed;
 }
 
 .submit-btn-text {
