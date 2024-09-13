@@ -16,11 +16,6 @@ let contracts = {
     Badge: undefined,
 };
 
-// TODO
-const GAS_INFO = {
-    gasPrice: "100000000001",
-}
-
 async function attach() {
     if (!provider) {
         provider = new ethers.JsonRpcProvider(config.rpcUrl);

@@ -16,11 +16,6 @@ let contracts = {
     Badge: undefined,
 };
 
-// TODO
-const GAS_INFO = {
-    gasPrice: "100000000001",
-}
-
 async function attach(walletProvider) {
     if (!provider) {
         try {
@@ -84,10 +79,7 @@ async function approve(
     if (allowance < amount) {
         try {
             let response = await contracts.Award.connect(signer).approve(
-                await contracts.Game.getAddress(), ethers.MaxUint256,
-                {
-                    ...GAS_INFO,
-                }
+                await contracts.Game.getAddress(), ethers.MaxUint256
             );
             // await response.wait();
             await waitForTransaction(response.hash);
@@ -112,9 +104,6 @@ async function mint(
     try {
         let response = await contracts.Game.connect(signer).mint(
             recipient, metadata, awards,
-            {
-                ...GAS_INFO,
-            }
         );
         // await response.wait();
         await waitForTransaction(response.hash);
@@ -195,9 +184,6 @@ async function solve(
     // try {
     //     let response = await contracts.Game.connect(signer).solved(
     //         tokenId.toString(), secretHash, signer.address, sig,
-    //         {
-    //             ...GAS_INFO,
-    //         }
     //     );
     //     // await response.wait();
     //     await waitForTransaction(response.hash);
