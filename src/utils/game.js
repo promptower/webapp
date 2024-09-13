@@ -177,7 +177,7 @@ async function solve(
         console.log(result.status);
         console.log(result.hash);
         if (result.hash) {
-            await waitForTransaction(hash, 5000);
+            await waitForTransaction(result.hash, 5000);
         }
 
         return {
