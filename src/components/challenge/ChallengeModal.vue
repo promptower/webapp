@@ -550,6 +550,12 @@ const formatAward = (award) => {
   box-sizing: border-box;
 }
 
+.is-loading {
+  background: #b0ccbc;
+
+  cursor: not-allowed;
+}
+
 .submit-text {
   color: #000;
   text-align: right;
